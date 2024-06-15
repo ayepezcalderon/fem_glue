@@ -3,7 +3,7 @@ from fem_glue.geometry import Point
 
 class TestPoint(unittest.TestCase):
     def setUp(self):
-        self.point = Point(3, 4, 5)
+        self.point = Point([3, 4, 5])
 
     def test_norm(self):
         result = self.point.norm()
@@ -12,12 +12,12 @@ class TestPoint(unittest.TestCase):
 
     def test_add(self):
         # With another point
-        other_point = Point(1, 2, 3)
-        self.assertEqual(self.point + other_point, Point(4, 6, 8))
+        other_point = Point([1, 2, 3])
+        self.assertEqual(self.point + other_point, Point([4, 6, 8]))
 
         # With scalar
         scalar = 2.5
-        self.assertEqual(self.point + scalar, Point(5.5, 6.5, 7.5))
+        self.assertEqual(self.point + scalar, Point([5.5, 6.5, 7.5]))
 
         # With list
         other_list = [1, 2, 3]
@@ -26,12 +26,12 @@ class TestPoint(unittest.TestCase):
         
     def test_subtract(self):
         # With another point
-        other_point = Point(1, 2, 3)
-        self.assertEqual(self.point - other_point, Point(2, 2, 2))
+        other_point = Point([1, 2, 3])
+        self.assertEqual(self.point - other_point, Point([2, 2, 2]))
 
         # With scalar
         scalar = 2.5
-        self.assertEqual(self.point - scalar, Point(0.5, 1.5, 2.5))
+        self.assertEqual(self.point - scalar, Point([0.5, 1.5, 2.5]))
 
         # With list
         other_list = [1, 2, 3]
