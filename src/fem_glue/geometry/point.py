@@ -1,7 +1,8 @@
 import math
 import operator
-from typing import Self
-from collections.abc import Callable
+import functools
+from typing import Self, get_type_hints
+from collections.abc import Callable, Sequence
 
 
 class Point:
@@ -18,13 +19,31 @@ class Point:
         """
         return self._coordinates[index]
 
+    def __len__(self) -> int:
+        return 3
+
     def __iter__(self):
         return iter(self._coordinates)
+
+    def __reversed__(self):
+        return reversed(self._coordinates)
+
+    def index(self, value: float) -> int:
+        """
+        Get the index of the given value.
+        """
+        return self._coordinates.index(value)
+
+    def count(self, value: float) -> int:
+        """
+        Count the occurrences of the given value.
+        """
+        return self._coordinates.count(value)
 
     def __repr__(self):
         return f"Point({self[0]}, {self[1]}, {self[2]})"
 
-    def __eq__(self, other: Self) -> bool:
+    def __eq__(self, other: "Point") -> bool:
         """
         Check if two points are equal.
         """
@@ -34,24 +53,44 @@ class Point:
         return self._coordinates == other._coordinates
 
     @staticmethod
-    def _math_operation(operator: Callable, other_type: type | None = None) -> Callable:
-        other_type = other_type or Point
+    def _math_operation(operator: Callable) -> Callable:
+        def decorator(f: Callable) -> Callable:
+            @functools.wraps(f)
+            def wrapper(self, other) -> Self:
+                if not isinstance(other, get_type_hints(f)["other"]):
+                    return NotImplemented
 
-        def wrapper(self: Self, other: Self) -> Self:
-            if not isinstance(other, other_type):
-                return NotImplemented
+                if isinstance(other, Sequence):
+                    if len(other) != 3:
+                        raise ValueError("Expected an iterable of length 3.")
+                    if not all(isinstance(i, (int, float)) for i in other):
+                        raise TypeError("Expected an iterable of numbers.")
 
-            return self.__class__(*map(operator, self, other))
+                if isinstance(other, (int, float)):
+                    other = (other, other, other)
 
-        return wrapper
+                return self.__class__(*map(operator, self, other))
 
-    __add__ = _math_operation(operator.add)
-    __sub__ = _math_operation(operator.sub)
-    __mul__ = _math_operation(operator.mul)
-    __truediv__ = _math_operation(operator.truediv)
-    __pow__ = _math_operation(operator.pow, other_type=float)
+            return wrapper
 
-    def distance(self, other: Self) -> float:
+        return decorator
+
+    @_math_operation(operator.add)
+    def __add__(self, other: float | Sequence) -> Self: ...
+
+    @_math_operation(operator.sub)
+    def __sub__(self, other: float | Sequence) -> Self: ...
+
+    @_math_operation(operator.mul)
+    def __mul__(self, other: float | Sequence) -> Self: ...
+
+    @_math_operation(operator.truediv)
+    def __truediv__(self, other: float | Sequence) -> Self: ...
+
+    @_math_operation(operator.pow)
+    def __pow__(self, other: float) -> Self: ...
+
+    def distance(self, other: "Point") -> float:
         """
         Calculate the distance between two points.
         """
