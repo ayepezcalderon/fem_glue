@@ -11,14 +11,12 @@ class Geometry[T](Sequence[T]):
     """
 
     def __init__(self, elements: Iterable[T], /):
-        elements = tuple(elements)
+        self._elements = tuple(elements)
 
-        if len(elements) != len(self):
+        if len(self._elements) != len(self):
             raise ValueError(
                 f"The number of elements in the iterabale must be equal to {len(self)}."
             )
-
-        self._elements = elements
 
     @overload
     def __getitem__(self, index: int) -> T:
