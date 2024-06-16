@@ -1,5 +1,5 @@
 import math
-from typing import  override
+from typing import override, Self
 
 from fem_glue.geometry.geometry import Geometry
 
@@ -19,13 +19,13 @@ class Point(Geometry[float]):
         """
         return math.dist(self, other)
 
-    def norm(self):
+    def norm(self) -> float:
         """
         Calculate the Eucledian norm of the point.
         """
         return math.hypot(*self)
 
-    def normalize(self):
+    def normalize(self) -> Self:
         """
         Normalize the point such that the origin and the point define a unit vector.
         """

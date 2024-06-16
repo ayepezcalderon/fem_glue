@@ -2,16 +2,23 @@ import functools
 import operator
 from typing import Self, overload, override
 from collections.abc import Callable, Iterable, Iterator, Sequence
-from abc import ABCMeta, abstractmethod
+from abc import abstractmethod
 
 
-class Geometry[T](Sequence[T], metaclass=ABCMeta):
+class Geometry[T](Sequence[T]):
     """
     Abstract base class for all geometries.
     """
 
     def __init__(self, elements: Iterable[T], /):
-        self._elements = tuple(elements)
+        elements = tuple(elements)
+
+        if len(elements) != len(self):
+            raise ValueError(
+                f"The number of elements in the iterabale must be equal to {len(self)}."
+            )
+
+        self._elements = elements
 
     @overload
     def __getitem__(self, index: int) -> T:
