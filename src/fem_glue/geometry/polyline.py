@@ -15,6 +15,7 @@ class Polyline(Geometry[Line]):
         # Validate that the polyline is closed and non-intersecting.
         if self[0] != self[-1]:
             raise ValueError("The polyline is not closed.")
+
         for i, ln1 in enumerate(self):
             for ln2 in self[i + 1:]:
                 if ln1.intersects(ln2):
