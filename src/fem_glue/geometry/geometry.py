@@ -1,5 +1,6 @@
 import functools
-from typing import Self, get_args, get_origin, get_type_hints, overload, override
+import operator
+from typing import Self, overload, override
 from collections.abc import Callable, Iterable, Iterator, Sequence
 from abc import ABCMeta, abstractmethod
 
@@ -29,10 +30,6 @@ class Geometry[T](Sequence[T], metaclass=ABCMeta):
         if isinstance(index, int):
             return self._elements[index]
         return list(self._elements[index])
-
-    @property
-    @abstractmethod
-    def _ELEMENTS_TYPE(self) -> type[T]: ...
 
     @abstractmethod
     @override
@@ -75,30 +72,46 @@ class Geometry[T](Sequence[T], metaclass=ABCMeta):
         return self._elements == other._elements
 
     @staticmethod
-    def _math_operation(op: Callable) -> Callable:
-        def decorator(f: Callable) -> Callable:
-            allowed_types = tuple(
-                og if (og := get_origin(i)) else i
-                for i in get_args(get_type_hints(f)["other"])
-            )
+    def _math_operation(f: Callable) -> Callable:
+        # Find operator from function name
+        op = getattr(operator, f.__name__.strip("__"))
 
-            @functools.wraps(f)
-            def wrapper(self: Self, other: Sequence[T] | T) -> Self:
-                if not isinstance(other, allowed_types):
-                    return NotImplemented
+        @functools.wraps(f)
+        def wrapper(self: Self, other: float | Sequence[float]) -> Self:
+            if not isinstance(other, float | Sequence):
+                return NotImplemented
 
-                if isinstance(other, Sequence):
-                    if len(other) != len(self):
-                        raise ValueError(f"Expected an iterable of length {len(self)}.")
-                    if not all(isinstance(i, self._ELEMENTS_TYPE) for i in other):
-                        raise TypeError(
-                            f"Expected an iterable of '{self._ELEMENTS_TYPE}'."
-                        )
-                else:
-                    other = [other] * len(self)
+            if isinstance(other, Sequence):
+                # Validate sequence
+                if len(other) != len(self):
+                    raise ValueError(f"Expected an iterable of length {len(self)}.")
+                if not all(isinstance(i, float) for i in other):
+                    raise TypeError("Expected an iterable of numbers.")
+            else:
+                # Cast to sequence of expected length
+                other = [other] * len(self)
 
-                return self.__class__(map(op, self, other))
+            return self.__class__(map(op, self, other))
 
-            return wrapper
+        return wrapper
 
-        return decorator
+    @_math_operation
+    def __add__(self, other: float | Sequence[float]) -> Self: ...
+
+    @_math_operation
+    def __sub__(self, other: float | Sequence[float]) -> Self: ...
+
+    @_math_operation
+    def __mul__(self, other: float | Sequence[float]) -> Self: ...
+
+    @_math_operation
+    def __truediv__(self, other: float | Sequence[float]) -> Self: ...
+
+    @_math_operation
+    def __floordiv__(self, other: float | Sequence[float]) -> Self: ...
+
+    def __pow__(self, other: float) -> Self:
+        if not isinstance(other, float):
+            return NotImplemented
+
+        return self.__class__(operator.pow(i, other) for i in self)
