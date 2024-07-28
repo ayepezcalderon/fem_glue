@@ -25,7 +25,7 @@ class _Configuration(BaseModel):
 
                 if not isinstance(static_config, dict):
                     raise TypeError(
-                        f"{_CONFIG_FILE_NAME} must be defined as a dictionary."
+                        f"'{_CONFIG_FILE_NAME}' must be defined as a dictionary."
                     )
 
                 kwargs |= static_config
@@ -43,3 +43,6 @@ class _Configuration(BaseModel):
         if not hasattr(self.__class__, "_initialized"):
             super().__init__(*args, **kwargs)
             _Configuration._initialized = True
+
+
+CONFIG = _Configuration()
