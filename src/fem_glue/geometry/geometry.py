@@ -83,14 +83,14 @@ class Geometry[T](Sequence[T]):
 
         @functools.wraps(f)
         def wrapper(self: Self, other: float | Sequence[float]) -> Self:
-            if not isinstance(other, float | Sequence):
+            if not isinstance(other, float | int | Sequence):
                 return NotImplemented
 
             if isinstance(other, Sequence):
                 # Validate sequence
                 if len(other) != len(self):
                     raise ValueError(f"Expected an iterable of length {len(self)}.")
-                if not all(isinstance(i, float) for i in other):
+                if not all(isinstance(i, float | int) for i in other):
                     raise TypeError("Expected an iterable of numbers.")
             else:
                 # Cast to sequence of expected length
@@ -116,7 +116,7 @@ class Geometry[T](Sequence[T]):
     def __floordiv__(self, other: float | Sequence[float]) -> Self: ...
 
     def __pow__(self, other: float) -> Self:
-        if not isinstance(other, float):
+        if not isinstance(other, float | int):
             return NotImplemented
 
         return self.__class__(operator.pow(i, other) for i in self)
