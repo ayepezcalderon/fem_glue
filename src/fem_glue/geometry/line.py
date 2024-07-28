@@ -4,6 +4,7 @@ from typing import override, Self
 
 from fem_glue.geometry.geometry import Geometry
 from fem_glue.geometry import Point
+from fem_glue._config import CONFIG
 
 
 class Line(Geometry[Point]):
@@ -19,7 +20,7 @@ class Line(Geometry[Point]):
         """
         Calculate the length of the line.
         """
-        return math.dist(*self)
+        return round(math.dist(*self), CONFIG.precision)
 
     def normalize(self) -> Self:
         """
@@ -27,7 +28,9 @@ class Line(Geometry[Point]):
         """
         return self / self.length()
 
-    def intersect(self, other: "Line", tol: float = 1e-9) -> "None | Point | Line":
+    def intersect(
+        self, other: "Line", tol: float = 10 ** -CONFIG.precision
+    ) -> "None | Point | Line":
         """
         Calculate the intersection of two lines. Return None if the lines do not
         intersect, a point if they intersect at a single point, and a line if

@@ -1,5 +1,7 @@
 import unittest
 from fem_glue.geometry import Point
+from fem_glue._config import CONFIG
+
 
 class TestPoint(unittest.TestCase):
     def setUp(self):
@@ -7,7 +9,7 @@ class TestPoint(unittest.TestCase):
 
     def test_norm(self):
         result = self.point.norm()
-        expected = (3**2 + 4**2 + 5**2)**0.5
+        expected = round((3**2 + 4**2 + 5**2) ** 0.5, CONFIG.precision)
         self.assertEqual(result, expected)
 
     def test_add(self):
@@ -23,7 +25,7 @@ class TestPoint(unittest.TestCase):
         other_list = [1, 2, 3]
         with self.assertRaises(TypeError):
             _ = self.point + other_list
-        
+
     def test_subtract(self):
         # With another point
         other_point = Point([1, 2, 3])
@@ -37,6 +39,7 @@ class TestPoint(unittest.TestCase):
         other_list = [1, 2, 3]
         with self.assertRaises(TypeError):
             _ = self.point + other_list
+
 
 #     def test_subtract(self):
 #         # With another point

@@ -1,5 +1,6 @@
 import unittest
 from fem_glue.geometry import Point, Line
+from fem_glue._config import CONFIG
 
 
 class TestLine(unittest.TestCase):
@@ -12,7 +13,7 @@ class TestLine(unittest.TestCase):
         self.line6 = Line([Point([0.5, 0.5, 0]), Point([1.5, 1.5, 0])])
 
     def test_length(self):
-        self.assertEqual(self.line1.length(), 2**0.5)
+        self.assertEqual(self.line1.length(), round(2**0.5, CONFIG.precision))
 
     def test_intersect(self):
         # Test intersection of two lines that intersect at a point
