@@ -120,3 +120,9 @@ class Geometry[T](Sequence[T]):
             return NotImplemented
 
         return self.__class__(operator.pow(i, other) for i in self)
+    #
+    # @abstractmethod
+    # def to_fenics(self): ...
+    #
+    # @abstractmethod
+    # def to_mesh(self): ...
