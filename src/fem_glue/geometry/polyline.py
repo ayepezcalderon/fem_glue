@@ -1,4 +1,4 @@
-from typing import override, overload, Self
+from typing import override, overload
 from collections.abc import Sequence
 
 from fem_glue.geometry.geometry import Geometry
@@ -30,15 +30,6 @@ class Polyline(Geometry[Line]):
             raise ValueError("The elements must be either Points or Lines.")
 
         super().__init__(elements)  # type: ignore
-
-        # # Validate that the polyline is closed and non-intersecting.
-        # if self[0] != self[-1]:
-        #     raise ValueError("The polyline is not closed.")
-        #
-        # for i, ln1 in enumerate(self):
-        #     for ln2 in self[i + 1 :]:
-        #         if ln1.intersects(ln2):
-        #             raise ValueError("The polyline is intersecting.")
 
     @override
     def __len__(self) -> int:

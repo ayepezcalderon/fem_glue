@@ -98,12 +98,12 @@ class Line(Geometry[Point]):
             t_max_clamped = min(1, t_max)
 
             # Find intersection
-            intersection_start = Point(P1 + t_min_clamped * d1)
+            intersection_start = Point(P1 + t_min_clamped * d1)  # type: ignore
             if np.isclose(t_min_clamped, t_max_clamped, atol=tol):
                 # Start and end point are the same -> intersection is a point
                 return intersection_start
             # Start and end point are different -> intersection is a segment
-            intersection_end = Point(P1 + t_max_clamped * d1)
+            intersection_end = Point(P1 + t_max_clamped * d1)  # type: ignore
             return Line([intersection_start, intersection_end])
 
         # Solve for t and s
