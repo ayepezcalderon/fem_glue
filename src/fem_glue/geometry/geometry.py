@@ -96,7 +96,7 @@ class Geometry[T](Sequence[T]):
                 # Cast to sequence of expected length
                 other = [other] * len(self)
 
-            return self.__class__(map(op, self, other))
+            return self.__class__([op(i, j) for i, j in zip(self, other)])
 
         return wrapper
 
@@ -119,7 +119,7 @@ class Geometry[T](Sequence[T]):
         if not isinstance(other, float | int):
             return NotImplemented
 
-        return self.__class__(operator.pow(i, other) for i in self)
+        return self.__class__([operator.pow(i, other) for i in self])
 
     #
     # @abstractmethod
