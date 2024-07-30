@@ -1,6 +1,6 @@
 import math
 from typing import override, Self
-from collections.abc import Iterable
+from collections.abc import Sequence
 
 from fem_glue.geometry.geometry import Geometry
 from fem_glue._config import CONFIG
@@ -11,7 +11,7 @@ class Point(Geometry[float]):
     A point in 3D space.
     """
 
-    def __init__(self, elements: Iterable[float], /):
+    def __init__(self, elements: Sequence[float], /):
         elements = [round(i, CONFIG.precision) for i in elements]
         super().__init__(elements)
 

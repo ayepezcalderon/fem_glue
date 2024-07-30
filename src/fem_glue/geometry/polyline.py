@@ -19,11 +19,11 @@ class Polyline(Geometry[Line]):
 
     def __init__(self, elements: Sequence[Line | Point], /):
         if all(isinstance(e, Point) for e in elements):
-            # Handle Iterable[Point] constructor
+            # Handle Sequence[Point] constructor
             elements = lines_from_points(elements)  # type: ignore
             self.points = list(elements)
         elif all(isinstance(e, Line) for e in elements):
-            # Handle Iterable[Line] constructor
+            # Handle Sequence[Line] constructor
             self.points = points_from_lines(elements)  # type: ignore
         else:
             # Raise error if elements are not Lines

@@ -1,7 +1,7 @@
 import functools
 import operator
 from typing import Self, overload, override
-from collections.abc import Callable, Iterable, Iterator, Sequence
+from collections.abc import Callable, Sequence, Iterator
 from abc import abstractmethod
 
 
@@ -10,7 +10,7 @@ class Geometry[T](Sequence[T]):
     Abstract base class for all geometries.
     """
 
-    def __init__(self, elements: Iterable[T], /):
+    def __init__(self, elements: Sequence[T], /):
         self._elements = tuple(elements)
 
         if len(self._elements) != len(self):
@@ -89,9 +89,9 @@ class Geometry[T](Sequence[T]):
             if isinstance(other, Sequence):
                 # Validate sequence
                 if len(other) != len(self):
-                    raise ValueError(f"Expected an iterable of length {len(self)}.")
+                    raise ValueError(f"Expected a sequence of length {len(self)}.")
                 if not all(isinstance(i, float | int) for i in other):
-                    raise TypeError("Expected an iterable of numbers.")
+                    raise TypeError("Expected a sequence of numbers.")
             else:
                 # Cast to sequence of expected length
                 other = [other] * len(self)
@@ -120,6 +120,7 @@ class Geometry[T](Sequence[T]):
             return NotImplemented
 
         return self.__class__(operator.pow(i, other) for i in self)
+
     #
     # @abstractmethod
     # def to_fenics(self): ...
