@@ -76,6 +76,9 @@ class Geometry[T](Sequence[T]):
 
         return self._elements == other._elements
 
+    def _generic_operation(self, other: float | Sequence[float], op: Callable) -> Self:
+        return self.__class__([op(i, other) for i in self])
+
     @staticmethod
     def _math_operation(f: Callable) -> Callable:
         # Find operator from function name
@@ -86,20 +89,7 @@ class Geometry[T](Sequence[T]):
             if not isinstance(other, float | int | Sequence):
                 return NotImplemented
 
-            # Apply operation on each coordinate of each point of the goemetry
-            if self.__class__.__name__ == "Point":
-                if isinstance(other, Sequence):
-                    # Validate sequence
-                    if len(other) != len(self):
-                        raise ValueError(f"Expected a sequence of length {len(self)}.")
-                    if not all(isinstance(i, float | int) for i in other):
-                        raise TypeError("Expected a sequence of numbers.")
-                else:
-                    # Cast to sequence of expected length
-                    other = [other] * len(self)
-
-                return self.__class__([op(i, j) for i, j in zip(self, other)])
-            return self.__class__([op(i, other) for i in self])
+            return self._generic_operation(other, op)
 
         return wrapper
 

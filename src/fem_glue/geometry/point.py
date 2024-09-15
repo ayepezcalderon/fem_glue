@@ -1,5 +1,5 @@
 import math
-from typing import override, Self
+from typing import override, Self, Callable
 from collections.abc import Sequence
 
 from fem_glue.geometry.geometry import Geometry
@@ -36,3 +36,18 @@ class Point(Geometry[float]):
         Normalize the point such that the origin and the point define a unit vector.
         """
         return self / self.norm()
+
+    @override
+    def _generic_operation(self, other: float | Sequence[float], op: Callable) -> Self:
+        # Apply operation on each coordinate of each point of the goemetry
+        if isinstance(other, Sequence):
+            # Validate sequence
+            if len(other) != 3:
+                raise ValueError("Expected a sequence of length 3.")
+            if not all(isinstance(i, float | int) for i in other):
+                raise TypeError("Expected a sequence of numbers.")
+        else:
+            # Cast to sequence of expected length
+            other = [other, other, other]
+
+        return self.__class__([op(i, j) for i, j in zip(self, other)])
