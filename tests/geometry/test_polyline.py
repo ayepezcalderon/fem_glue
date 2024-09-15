@@ -4,13 +4,13 @@ from fem_glue.geometry import Point, Line, Polyline
 
 class TestPolyline(unittest.TestCase):
     def setUp(self):
-        self.points = (
+        self.points = [
             Point([0, 0, 0]),
             Point([1, 0, 0]),
             Point([1, 2, 0]),
             Point([0, 2, 0]),
             Point([0, 0, 0]),
-        )
+        ]
         self.lines = (
             Line([self.points[0], self.points[1]]),
             Line([self.points[1], self.points[2]]),
@@ -22,10 +22,12 @@ class TestPolyline(unittest.TestCase):
     def test_init_with_points(self):
         polyline = Polyline(self.points)
         self.assertEqual(polyline._elements, self.lines)
+        self.assertEqual(polyline.get_points(), self.points)
 
     def test_init_with_lines(self):
         polyline = Polyline(self.lines)
         self.assertEqual(polyline._elements, self.lines)
+        self.assertEqual(polyline.get_points(), self.points)
 
     def test_init_with_mixed_elements(self):
         with self.assertRaises(ValueError):
