@@ -1,9 +1,11 @@
+import functools
+
 from typing import override, overload
 from collections.abc import Sequence
 
 from fem_glue.geometry.geometry import Geometry
 from fem_glue.geometry import Line, Point
-from fem_glue.geometry.utils import lines_from_points, points_from_polyline_lines
+from fem_glue.geometry.utils import lines_from_points, points_from_lines
 
 
 class Polyline(Geometry[Line]):
@@ -16,77 +18,78 @@ class Polyline(Geometry[Line]):
         self,
         elements: Sequence[Line],
         /,
-        check_is_closed: bool = False,
-        check_is_non_intersecting: bool = False,
+        close: bool = False,
+        strict_non_intersecting: bool = False,
     ): ...
-
-    def _lines_init(
-        self,
-        elements: Sequence[Line],
-        /,
-        check_is_closed: bool = False,
-        check_is_non_intersecting: bool = False,
-    ) -> Sequence[Line]:
-        # Define as closed or not
-        self._is_closed = elements[0][0] == elements[-1][1]
-        if not self._is_closed:
-            self._raise_not_closed_error()
-
-        # Define as non-intersecting or not
-        self._is_non_intersecting = all(
-            self[ref_idx].intersect(other) is None
-            for ref_idx in range(len(self) - 1)
-            for other in self[ref_idx + 1 :]
-        )
-        if not self._is_non_intersecting:
-            self._raise_not_non_intersecting_error()
-
-        self._points = points_from_polyline_lines(elements)
-
-        return elements
 
     @overload
     def __init__(
         self,
         elements: Sequence[Point],
         /,
-        check_is_closed: bool = False,
-        check_is_non_intersecting: bool = False,
+        close: bool = False,
+        strict_non_intersecting: bool = False,
     ): ...
-
-    def _points_init(
-        self,
-        elements: Sequence[Point],
-        /,
-        check_is_closed: bool = False,
-        check_is_non_intersecting: bool = False,
-    ) -> Sequence[Line]:
-        self._points = list(elements)
-
-        return lines_from_points(elements)
 
     def __init__(
         self,
-        elements: Sequence[Line | Point],
+        elements: Sequence[Line] | Sequence[Point],
         /,
-        check_is_closed: bool = False,
-        check_is_non_intersecting: bool = False,
+        close: bool = False,
+        strict_non_intersecting: bool = False,
     ):
+        # Get list of lines from input
         if all(isinstance(e, Point) for e in elements):
-            _elements = self._points_init(
-                elements, check_is_closed, check_is_non_intersecting
-            )
+            lines: list[Line] = lines_from_points(elements)  # type: ignore
         elif all(isinstance(e, Line) for e in elements):
-            _elements = self._lines_init(
-                elements, check_is_closed, check_is_non_intersecting
-            )
+            lines: list[Line] = list(elements)  # type: ignore
         else:
-            # Raise error if elements are not Lines
-            raise ValueError("The elements must be either Points or Lines.")
+            raise TypeError("The elements must be either Points or Lines.")
 
-        super().__init__(_elements)
+        # Close the polyline if required
+        is_closed = lines[-1][1] == lines[0][0]
+        if not is_closed and close:
+            lines.append(Line([lines[-1][1], lines[0][0]]))
+            is_closed = True
+        self._is_closed = is_closed
 
-    def get_points(self) -> list[Point]:
+        # Raise error if intersecting but non-intersecting must be enforced
+        if strict_non_intersecting and not self.is_non_intersecting():
+            raise ValueError(
+                "The polyline is self intersecting. "
+                "If this should not raise an error, set 'strict_non_intersecting' to False."
+            )
+
+        # Set points
+        self._points = points_from_lines(lines)
+
+        super().__init__(lines)
+
+    @functools.cache
+    def get_self_intersections(self) -> tuple[list[Point], list[Line]]:
+        points = []
+        lines = []
+        # Total iterations == (len(self) - 1) * len(self) / 2
+        for ref_idx in range(len(self) - 1):
+            for other in self[ref_idx + 1 :]:
+                intersection = self[ref_idx].intersect(other)
+                if isinstance(intersection, Point):
+                    points.append(intersection)
+                elif isinstance(intersection, Line):
+                    lines.append(intersection)
+                else:
+                    assert intersection is None
+
+        return points, lines
+
+    def is_closed(self) -> bool:
+        return self._is_closed
+
+    def is_non_intersecting(self) -> bool:
+        return not any(self.get_self_intersections())
+
+    @property
+    def points(self) -> list[Point]:
         return self._points
 
     @override

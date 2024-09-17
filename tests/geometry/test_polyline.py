@@ -22,12 +22,12 @@ class TestPolyline(unittest.TestCase):
     def test_init_with_points(self):
         polyline = Polyline(self.points)
         self.assertEqual(polyline._elements, self.lines)
-        self.assertEqual(polyline.get_points(), self.points)
+        self.assertEqual(polyline.points, self.points)
 
     def test_init_with_lines(self):
         polyline = Polyline(self.lines)
         self.assertEqual(polyline._elements, self.lines)
-        self.assertEqual(polyline.get_points(), self.points)
+        self.assertEqual(polyline.points, self.points)
 
     def test_init_with_mixed_elements(self):
         with self.assertRaises(ValueError):
