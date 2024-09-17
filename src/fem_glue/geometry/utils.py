@@ -9,11 +9,10 @@ def lines_from_points(points: Sequence[Point]) -> list[Line]:
 def points_from_polyline_lines(
     lines: Sequence[Line], closed: bool = False
 ) -> list[Point]:
-    # Handle open case
     if not all(l1[1] == l2[0] for l1, l2 in zip(lines, lines[1:])):
         raise ValueError("The lines are not connected.")
-    points = [line[0] for line in lines]
 
+    points = [line[0] for line in lines]
     if not closed:
         points.append(lines[-1][1])
 
