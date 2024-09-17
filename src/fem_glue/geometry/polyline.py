@@ -5,7 +5,7 @@ from collections.abc import Sequence
 
 from fem_glue.geometry.geometry import Geometry
 from fem_glue.geometry import Line, Point
-from fem_glue.geometry.utils import lines_from_points, points_from_lines
+from fem_glue.geometry.utils import lines_from_points
 
 
 class Polyline(Geometry[Line]):
@@ -43,6 +43,12 @@ class Polyline(Geometry[Line]):
             lines: list[Line] = lines_from_points(elements)  # type: ignore
         elif all(isinstance(e, Line) for e in elements):
             lines: list[Line] = list(elements)  # type: ignore
+            # Check that lines are connected
+            for i in range(len(lines) - 1):
+                if lines[i][1] != lines[i + 1][0]:
+                    raise ValueError(
+                        f"Line '{i}' is not connected with line '{i + 1}'."
+                    )
         else:
             raise TypeError("The elements must be either Points or Lines.")
 
@@ -61,7 +67,9 @@ class Polyline(Geometry[Line]):
             )
 
         # Set points
-        self._points = points_from_lines(lines)
+        self._points = [ln[0] for ln in lines]
+        if not self.is_closed():
+            self._points.append(lines[-1][1])
 
         super().__init__(lines)
 
