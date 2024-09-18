@@ -6,6 +6,7 @@ from collections.abc import Sequence
 from fem_glue.geometry.geometry import Geometry
 from fem_glue.geometry import Line, Point
 from fem_glue.geometry.utils import lines_from_points
+from fem_glue._config import CONFIG
 
 
 class Polyline(Geometry[Line]):
@@ -108,4 +109,4 @@ class Polyline(Geometry[Line]):
         """
         Calculate the perimeter of the polyline.
         """
-        return sum(ln.length() for ln in self)
+        return round(sum(ln.length() for ln in self), CONFIG.precision)
