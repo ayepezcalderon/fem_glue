@@ -12,7 +12,7 @@ class Point(Geometry[float]):
     """
 
     def __init__(self, elements: Sequence[float], /):
-        elements = [round(i, CONFIG.precision) for i in elements]
+        elements = [float(round(i, CONFIG.precision)) for i in elements]
         super().__init__(elements)
 
     @override
