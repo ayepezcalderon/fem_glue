@@ -76,20 +76,20 @@ class Polyline(Geometry[Line]):
 
     @functools.cache
     def get_self_intersections(self) -> tuple[list[Point], list[Line]]:
-        points = []
-        lines = []
+        points = set()
+        lines = set()
         # Total iterations == (len(self) - 1) * len(self) / 2
         for ref_idx in range(len(self) - 1):
             for other in self[ref_idx + 1 :]:
                 intersection = self[ref_idx].intersect(other)
                 if isinstance(intersection, Point):
-                    points.append(intersection)
+                    points.add(intersection)
                 elif isinstance(intersection, Line):
-                    lines.append(intersection)
+                    lines.add(intersection)
                 else:
                     assert intersection is None
 
-        return points, lines
+        return sorted(points), sorted(lines)
 
     def is_closed(self) -> bool:
         return self._is_closed
