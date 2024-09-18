@@ -77,6 +77,37 @@ class Geometry[T](Sequence[T]):
         return self._elements == other._elements
 
     @override
+    def __ne__(self, other: object) -> bool:
+        if not isinstance(other, self.__class__):
+            return NotImplemented
+
+        return self._elements != other._elements
+
+    def __lt__(self, other: object) -> bool:
+        if not isinstance(other, self.__class__):
+            return NotImplemented
+
+        return self._elements < other._elements
+
+    def __gt__(self, other: object) -> bool:
+        if not isinstance(other, self.__class__):
+            return NotImplemented
+
+        return self._elements > other._elements
+
+    def __le__(self, other: object) -> bool:
+        if not isinstance(other, self.__class__):
+            return NotImplemented
+
+        return self._elements <= other._elements
+
+    def __ge__(self, other: object) -> bool:
+        if not isinstance(other, self.__class__):
+            return NotImplemented
+
+        return self._elements >= other._elements
+
+    @override
     def __hash__(self) -> int:
         return hash(self._elements)
 
