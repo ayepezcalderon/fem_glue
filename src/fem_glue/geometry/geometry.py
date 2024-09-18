@@ -76,6 +76,10 @@ class Geometry[T](Sequence[T]):
 
         return self._elements == other._elements
 
+    @override
+    def __hash__(self) -> int:
+        return hash(self._elements)
+
     def _generic_operation(self, other: float | Sequence[float], op: Callable) -> Self:
         return self.__class__([op(i, other) for i in self])
 
