@@ -44,5 +44,9 @@ class _Configuration(BaseModel):
             super().__init__(*args, **kwargs)
             _Configuration._initialized = True
 
+    @property
+    def tol(self):
+        return 10**-self.precision
+
 
 CONFIG = _Configuration()
