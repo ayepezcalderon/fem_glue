@@ -1,8 +1,12 @@
+import math
 import functools
 import operator
+
 from typing import Self, overload, override
 from collections.abc import Callable, Sequence, Iterator
 from abc import abstractmethod
+
+from fem_glue._config import CONFIG
 
 
 class Geometry[T](Sequence[T]):
@@ -67,7 +71,7 @@ class Geometry[T](Sequence[T]):
         return f"{self.__class__}([{', '.join(str(i) for i in self)}])"
 
     @override
-    def __eq__(self, other: object) -> bool:
+    def __eq__(self, other: Self) -> bool:
         """
         Check if two geometries of the same type are equal.
         """
@@ -77,31 +81,31 @@ class Geometry[T](Sequence[T]):
         return self._elements == other._elements
 
     @override
-    def __ne__(self, other: object) -> bool:
+    def __ne__(self, other: Self) -> bool:
         if not isinstance(other, self.__class__):
             return NotImplemented
 
         return self._elements != other._elements
 
-    def __lt__(self, other: object) -> bool:
+    def __lt__(self, other: Self) -> bool:
         if not isinstance(other, self.__class__):
             return NotImplemented
 
         return self._elements < other._elements
 
-    def __gt__(self, other: object) -> bool:
+    def __gt__(self, other: Self) -> bool:
         if not isinstance(other, self.__class__):
             return NotImplemented
 
         return self._elements > other._elements
 
-    def __le__(self, other: object) -> bool:
+    def __le__(self, other: Self) -> bool:
         if not isinstance(other, self.__class__):
             return NotImplemented
 
         return self._elements <= other._elements
 
-    def __ge__(self, other: object) -> bool:
+    def __ge__(self, other: Self) -> bool:
         if not isinstance(other, self.__class__):
             return NotImplemented
 

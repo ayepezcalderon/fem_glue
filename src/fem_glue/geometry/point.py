@@ -51,3 +51,25 @@ class Point(Geometry[float]):
             other = [other, other, other]
 
         return self.__class__([op(i, j) for i, j in zip(self, other)])
+
+    @override
+    def __eq__(self, other: "Point") -> bool:
+        """
+        Check if two geometries of the same type are equal.
+        """
+        if not isinstance(other, self.__class__):
+            return NotImplemented
+
+        return all(
+            math.isclose(i, j, abs_tol=CONFIG.tol)
+            for i, j in zip(self, other, strict=True)
+        )
+
+    __hash__ = Geometry.__hash__
+
+    @override
+    def __ne__(self, other: Self) -> bool:
+        if not isinstance(other, self.__class__):
+            return NotImplemented
+
+        return not self._elements == other._elements
