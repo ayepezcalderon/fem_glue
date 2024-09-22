@@ -1,3 +1,5 @@
+import math
+
 from typing import Literal
 from fem_glue._config import CONFIG
 
@@ -11,9 +13,9 @@ def tol_compare(a: float, b: float, op: _OP_STR, tol: float = CONFIG.tol) -> boo
         case "le":
             return a < b + tol
         case "eq":
-            return abs(a - b) < tol
+            return math.isclose(a, b, abs_tol=tol)
         case "ne":
-            return not abs(a - b) < tol
+            return not math.isclose(a, b, abs_tol=tol)
         case "ge":
             return a > b - tol
         case "gt":
