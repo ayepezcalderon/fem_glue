@@ -5,6 +5,7 @@ from typing import override, Self
 from fem_glue.geometry.geometry import Geometry
 from fem_glue.geometry import Point
 from fem_glue._config import CONFIG
+from fem_glue._utils import tol_compare
 
 
 class Line(Geometry[Point]):
@@ -29,7 +30,10 @@ class Line(Geometry[Point]):
         return self / self.length()
 
     def intersect(
-        self, other: "Line", tol: float = 10 ** -CONFIG.precision
+        self,
+        other: "Line",
+        return_mutual_endpoints: bool = True,
+        tol: float = CONFIG.tol,
     ) -> "None | Point | Line":
         """
         Calculate the intersection of two lines. Return None if the lines do not
@@ -90,7 +94,7 @@ class Line(Geometry[Point]):
             t_min, t_max = sorted((t1, t2))
 
             # Handle non-overlapping lines
-            if t_max < 0 or t_min > 1:
+            if tol_compare(t_max, 0, op='lt') or tol_compare(t_min, 1, op='gt'):
                 return None
 
             # Update t-results such that they are bounded by the interval [0, 1]
@@ -101,10 +105,16 @@ class Line(Geometry[Point]):
             intersection_start = Point(P1 + t_min_clamped * d1)  # type: ignore
             if np.isclose(t_min_clamped, t_max_clamped, atol=tol):
                 # Start and end point are the same -> intersection is a point
-                return intersection_start
+                return intersection_start if return_mutual_endpoints else None
             # Start and end point are different -> intersection is a segment
             intersection_end = Point(P1 + t_max_clamped * d1)  # type: ignore
             return Line([intersection_start, intersection_end])
+
+        # Check if lines share a point and return appropriate value
+        for _point1 in self:
+            for _point2 in other:
+                if _point1 == _point2:
+                    return Point(_point1) if return_mutual_endpoints else None
 
         # Solve for t and s
         A = np.array([d1, -d2]).T
@@ -112,8 +122,8 @@ class Line(Geometry[Point]):
 
         t, s = np.linalg.lstsq(A, b, rcond=None)[0]
 
-        # If any of the parameters are not within [0, 1], the lines do not intersect
-        if not (0 <= t <= 1 and 0 <= s <= 1):
+        # If any of the parameters are not within (0, 1), the lines do not intersect
+        if not (0 < t < 1 and 0 < s < 1):
             return None
 
         intersection_point_L1 = P1 + t * d1

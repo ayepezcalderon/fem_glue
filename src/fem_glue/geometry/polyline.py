@@ -81,7 +81,9 @@ class Polyline(Geometry[Line]):
         # Total iterations == (len(self) - 1) * len(self) / 2
         for ref_idx in range(len(self) - 1):
             for other in self[ref_idx + 1 :]:
-                intersection = self[ref_idx].intersect(other)
+                intersection = self[ref_idx].intersect(
+                    other, return_mutual_endpoints=False
+                )
                 if isinstance(intersection, Point):
                     points.add(intersection)
                 elif isinstance(intersection, Line):
