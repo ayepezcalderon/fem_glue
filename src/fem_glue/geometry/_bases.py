@@ -6,7 +6,7 @@ from collections.abc import Callable, Sequence, Iterator
 from abc import abstractmethod
 
 
-class Geometry[T](Sequence[T]):
+class SequentialGeometry[T](Sequence[T]):
     """
     Abstract base class for all geometries.
     """

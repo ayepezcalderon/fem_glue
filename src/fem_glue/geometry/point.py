@@ -2,11 +2,11 @@ import math
 from typing import override, Self, Callable
 from collections.abc import Sequence
 
-from fem_glue.geometry._bases import Geometry
+from fem_glue.geometry._bases import SequentialGeometry
 from fem_glue._config import CONFIG
 
 
-class Point(Geometry[float]):
+class Point(SequentialGeometry[float]):
     """
     A point in 3D space.
     """
@@ -85,7 +85,7 @@ class Point(Geometry[float]):
             for i, j in zip(self, other, strict=True)
         )
 
-    __hash__ = Geometry.__hash__
+    __hash__ = SequentialGeometry.__hash__
 
     @override
     def __ne__(self, other: Self) -> bool:

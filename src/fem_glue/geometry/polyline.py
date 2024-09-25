@@ -3,13 +3,13 @@ import functools
 from typing import override, overload
 from collections.abc import Sequence
 
-from fem_glue.geometry._bases import Geometry
+from fem_glue.geometry._bases import SequentialGeometry
 from fem_glue.geometry import Line, Point
 from fem_glue.geometry.utils import lines_from_points
 from fem_glue._config import CONFIG
 
 
-class Polyline(Geometry[Line]):
+class Polyline(SequentialGeometry[Line]):
     """
     A polyline with n-straight lines.
     """

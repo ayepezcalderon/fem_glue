@@ -4,13 +4,13 @@ import numpy as np
 
 from typing import override, Self
 
-from fem_glue.geometry._bases import Geometry
+from fem_glue.geometry._bases import SequentialGeometry
 from fem_glue.geometry import Point
 from fem_glue._config import CONFIG
 from fem_glue._utils import tol_compare
 
 
-class Line(Geometry[Point]):
+class Line(SequentialGeometry[Point]):
     """
     A straight line with 2 points.
     """
