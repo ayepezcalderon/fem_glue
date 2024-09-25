@@ -1,5 +1,7 @@
+import functools
 import math
 import numpy as np
+
 from typing import override, Self
 
 from fem_glue.geometry.geometry import Geometry
@@ -29,6 +31,7 @@ class Line(Geometry[Point]):
         """
         return self / self.length()
 
+    @functools.cache
     def intersect(
         self,
         other: "Line",
