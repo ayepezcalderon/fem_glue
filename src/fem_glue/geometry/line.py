@@ -4,7 +4,7 @@ import numpy as np
 
 from typing import override, Self
 
-from fem_glue.geometry.geometry import Geometry
+from fem_glue.geometry._bases import Geometry
 from fem_glue.geometry import Point
 from fem_glue._config import CONFIG
 from fem_glue._utils import tol_compare

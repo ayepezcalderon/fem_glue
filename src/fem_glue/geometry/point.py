@@ -2,7 +2,7 @@ import math
 from typing import override, Self, Callable
 from collections.abc import Sequence
 
-from fem_glue.geometry.geometry import Geometry
+from fem_glue.geometry._bases import Geometry
 from fem_glue._config import CONFIG
 
 
@@ -39,6 +39,26 @@ class Point(Geometry[float]):
 
     @override
     def _generic_operation(self, other: float | Sequence[float], op: Callable) -> Self:
+        """Special function that defines how the mathematical operator "op"
+        (eg. op == operator.__add__), which relates to a dunder (eg. __add__) behaves.
+
+        For the Point, the arithmetic operation is performed on each coordinate.
+        When "other" is a float, the same float acts on all coordinates.
+        When a "other" is a sequence of 3 floats, each float in the sequence acts with
+        its respective counterpart in the Point.
+
+        Parameters
+        ----------
+        other : float | Sequence[float]
+            The arithmetic operation acts on this data structure and self.
+        op : Callable
+            The arithmetic operation to perform.
+
+        Returns
+        -------
+        Self
+            The result of the arithmetic operation.
+        """
         # Apply operation on each coordinate of each point of the goemetry
         if isinstance(other, Sequence):
             # Validate sequence

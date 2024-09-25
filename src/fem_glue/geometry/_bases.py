@@ -1,12 +1,9 @@
-import math
 import functools
 import operator
 
 from typing import Self, overload, override
 from collections.abc import Callable, Sequence, Iterator
 from abc import abstractmethod
-
-from fem_glue._config import CONFIG
 
 
 class Geometry[T](Sequence[T]):
@@ -116,6 +113,28 @@ class Geometry[T](Sequence[T]):
         return hash(self._elements)
 
     def _generic_operation(self, other: float | Sequence[float], op: Callable) -> Self:
+        """Special function that defines how the mathematical operator "op"
+        (eg. op == operator.__add__), which relates to a dunder (eg. __add__) behaves.
+
+        The default generic operation defined here performs "op" between "other" and
+        each element of self.
+        
+        Subclasses may override this function to override the default generic
+        operation behavior defined here.
+
+        Parameters
+        ----------
+        other : float | Sequence[float]
+            The arithmetic operation acts on this data structure and self.
+        op : Callable
+            The arithmetic operation to perform.
+
+        Returns
+        -------
+        Self
+            The result of the arithmetic operation.
+        """
+
         return self.__class__([op(i, other) for i in self])
 
     @staticmethod
