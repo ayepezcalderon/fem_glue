@@ -73,6 +73,20 @@ class Polyline(Geometry[Line]):
         super().__init__(lines)
 
     def get_self_intersections(self) -> tuple[list[Point], list[Line]]:
+        """
+        Return the intersections between the lines in the polyline.
+        The points at which the lines meet (ie. mutual endpoints) DO NOT count as
+        intersections.
+
+
+        Returns
+        -------
+        tuple[list[Point], list[Line]]
+            The first value is a list containing the points (excluding meeting points)
+            that the lines have in common.
+            The second value is a list containing the segments of that the lines have
+            in common.
+        """
         points = set()
         lines = set()
         # Total iterations == (len(self) - 1) * len(self) / 2

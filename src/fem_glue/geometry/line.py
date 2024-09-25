@@ -39,7 +39,7 @@ class Line(Geometry[Point]):
         tol: float = CONFIG.tol,
     ) -> "None | Point | Line":
         """
-        Calculate the intersection of two lines. Return None if the lines do not
+        Calculate the intersection between two lines. Return None if the lines do not
         intersect, a point if they intersect at a single point, and a line if
         they intersect at a segment.
 
@@ -73,6 +73,24 @@ class Line(Geometry[Point]):
                         - L1(t) = L2(s) and t, s are within the interval [0, 1]
                             - t, s can be obtained from the system of linear equations
                             defined by L1(t) = L2(s)
+
+        Parameters
+        ----------
+        other : "Line"
+            The against which intersections are computed.
+        return_mutual_endpoints : bool
+            Determines wether to consider mutual endpoints between the lines as 
+            intersections. By default True.
+        tol : float
+            Tolerance specifying how close lines have to be together to intersect.
+            Usually a very small number for stabilizing floating point operations.
+
+        Returns
+        -------
+        "None | Point | Line"
+            Intersection between the lines. None if they don't intersect,
+            a Point if they intersect at a point, and a Line if they intersect at a 
+            segment (ie. infinitely many points).
         """
         # Convert points to numpy arrays
         P1, P2, Q1, Q2 = [np.array(p) for p in [*self, *other]]
@@ -97,7 +115,7 @@ class Line(Geometry[Point]):
             t_min, t_max = sorted((t1, t2))
 
             # Handle non-overlapping lines
-            if tol_compare(t_max, 0, op='lt') or tol_compare(t_min, 1, op='gt'):
+            if tol_compare(t_max, 0, op="lt") or tol_compare(t_min, 1, op="gt"):
                 return None
 
             # Update t-results such that they are bounded by the interval [0, 1]
