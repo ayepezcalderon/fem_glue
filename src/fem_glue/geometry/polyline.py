@@ -1,5 +1,3 @@
-import functools
-
 from typing import override, overload
 from collections.abc import Sequence
 
@@ -74,7 +72,6 @@ class Polyline(Geometry[Line]):
 
         super().__init__(lines)
 
-    @functools.cache
     def get_self_intersections(self) -> tuple[list[Point], list[Line]]:
         points = set()
         lines = set()
