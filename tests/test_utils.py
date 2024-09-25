@@ -37,4 +37,4 @@ class TestTolCompare(unittest.TestCase):
 
     def test_invalid_op(self):
         with self.assertRaises(ValueError):
-            self.tol_compare(1.0, 1.02, "invalid_op")
+            self.tol_compare(1.0, 1.02, "invalid_op")  # type: ignore

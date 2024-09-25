@@ -1,7 +1,8 @@
 import itertools
 
 from collections.abc import Sequence
-from fem_glue.geometry import Line, Point
+from fem_glue.geometry.dim1 import Line
+from fem_glue.geometry import Point
 
 
 def lines_from_points(points: Sequence[Point]) -> list[Line]:

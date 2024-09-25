@@ -4,7 +4,8 @@ from typing import override, overload
 from collections.abc import Sequence
 
 from fem_glue.geometry._bases import SequentialGeometry
-from fem_glue.geometry import Line, Point
+from fem_glue.geometry import Point
+from fem_glue.geometry.dim1 import Line
 from fem_glue.geometry.utils import lines_from_points
 from fem_glue._config import CONFIG
 

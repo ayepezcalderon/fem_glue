@@ -31,7 +31,7 @@ class TestDefaultClosedNonIntersecting(unittest.TestCase):
 
     def test_init_with_mixed_elements(self):
         with self.assertRaises(TypeError):
-            Polyline([self.points[0], self.lines[0]])
+            Polyline([self.points[0], self.lines[0]])  # type: ignore
 
     def test_len(self):
         self.assertEqual(len(self.polyline), 4)
