@@ -1,3 +1,5 @@
+import functools
+
 from typing import override, overload
 from collections.abc import Sequence
 
@@ -105,9 +107,27 @@ class Polyline(Geometry[Line]):
         return sorted(points), sorted(lines)
 
     def is_closed(self) -> bool:
+        """
+        Determines if the polyline is closed.
+
+        Returns
+        -------
+        bool
+            Whether the polyline is closed.
+        """
+
         return self._is_closed
 
+    @functools.cache
     def is_non_intersecting(self) -> bool:
+        """
+        Determines if the polyline is self-intersecting.
+
+        Returns
+        -------
+        bool
+            Whether the polyline is self-intersecting.
+        """
         return not any(self.get_self_intersections())
 
     @property
