@@ -31,6 +31,86 @@ class Line(SequentialGeometry[Point]):
         """
         return self / self.length()
 
+    def dir_vector(self) -> np.ndarray:
+        """
+        Return the direction vector of the line.
+        """
+        return np.array(self[1] - self[0])
+
+    def dir_unit_vector(self) -> np.ndarray:
+        """
+        Calculate the unit direction vector of the line.
+        """
+        return self.dir_vector() / self.length()
+
+    def is_parallel(self, other: "Line", tol: float = CONFIG.tol) -> bool:
+        """
+        Check if two lines are parallel.
+
+        Parameters
+        ----------
+        other : "Line"
+            The line to compare against.
+        tol : float
+            Tolerance specifying how close lines have to be together to be considered
+            parallel.
+            Usually a very small number for stabilizing floating point operations.
+
+        Returns
+        -------
+        bool
+            True if the lines are parallel, False otherwise.
+        """
+        self._check_other_is_line(other)
+
+        # If cross product of direction vectors is zero, lines are parallel
+        are_parallel = (
+            np.linalg.norm(np.cross(self.dir_vector(), other.dir_vector())) < tol
+        )
+
+        assert isinstance(are_parallel, np.bool_)
+
+        return bool(are_parallel)
+
+    def is_collinear(self, other: "Line", tol: float = CONFIG.tol) -> bool:
+        """
+        Check if two lines are collinear.
+
+        Parameters
+        ----------
+        other : "Line"
+            The line to compare against.
+        tol : float
+            Tolerance specifying how close lines have to be together to be considered
+            collinear.
+            Usually a very small number for stabilizing floating point operations.
+
+        Returns
+        -------
+        bool
+            True if the lines are collinear, False otherwise.
+        """
+        self._check_other_is_line(other)
+
+        v1 = self.__class__(sorted(self))
+        v2 = other.__class__(sorted(other))
+
+        if v1 == v2:
+            return True
+
+        # The interpolation vector is the difference between different points
+        interpoint_vector = v2[0] - v1[0] if v2[0] != v1[0] else v2[1] - v1[1]
+
+        # If cross product of direction vector and vector between points is not zero,
+        # lines are not collinear
+        are_collinear = (
+            np.linalg.norm(np.cross(v1.dir_vector(), interpoint_vector)) < tol
+        )
+
+        assert isinstance(are_collinear, np.bool_)
+
+        return bool(are_collinear)
+
     @functools.cache
     def intersect(
         self,
@@ -79,7 +159,7 @@ class Line(SequentialGeometry[Point]):
         other : "Line"
             The against which intersections are computed.
         return_mutual_endpoints : bool
-            Determines wether to consider mutual endpoints between the lines as 
+            Determines wether to consider mutual endpoints between the lines as
             intersections. By default True.
         tol : float
             Tolerance specifying how close lines have to be together to intersect.
@@ -89,7 +169,7 @@ class Line(SequentialGeometry[Point]):
         -------
         "None | Point | Line"
             Intersection between the lines. None if they don't intersect,
-            a Point if they intersect at a point, and a Line if they intersect at a 
+            a Point if they intersect at a point, and a Line if they intersect at a
             segment (ie. infinitely many points).
         """
         # Convert points to numpy arrays
@@ -100,11 +180,9 @@ class Line(SequentialGeometry[Point]):
         d2 = Q2 - Q1
 
         # Handle parallel lines
-        # If cross product of direction vectors is zero, lines are parallel
-        if np.linalg.norm(np.cross(d1, d2)) < tol:
-            # If cross product of direction vector and vector between points is not zero,
-            # lines are not collinear, so there is no intersection
-            if np.linalg.norm(np.cross(Q1 - P1, d1)) >= tol:
+        if self.is_parallel(other, tol=tol):
+            # If lines are parallel but not collinear, there is no intersection
+            if not self.is_collinear(other, tol=tol):
                 return None
 
             # Find the parametrized scalar for the P-line at the Q-line endpoints
@@ -156,3 +234,8 @@ class Line(SequentialGeometry[Point]):
             )
 
         return Point(intersection_point_L1)
+
+    @staticmethod
+    def _check_other_is_line(other):
+        if not isinstance(other, Line):
+            raise TypeError("The other object must be a Line.")

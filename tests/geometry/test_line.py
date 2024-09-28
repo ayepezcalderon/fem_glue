@@ -1,4 +1,7 @@
 import unittest
+
+import numpy as np
+
 from fem_glue.geometry import Point, Line
 from fem_glue._config import CONFIG
 
@@ -13,8 +16,55 @@ class TestLine(unittest.TestCase):
         self.line6 = Line([Point([0.5, 0.5, 0]), Point([1.5, 1.5, 0])])
         self.line7 = Line([Point([10, 1, 0]), Point([10, 0, 0])])
 
+    def test_in_keyword(self):
+        for p in self.line6:
+            # Differs from n by less than the config tolerance
+            almost_p = p + 10 ** -(CONFIG.precision + 1)
+
+            self.assertIn(almost_p, self.line6)
+
     def test_length(self):
         self.assertEqual(self.line1.length(), round(2**0.5, CONFIG.precision))
+
+    def test_dir_vector(self):
+        expected = np.array([1, 1, 0])
+        np.testing.assert_array_equal(self.line3.dir_vector(), expected)
+
+    def test_dir_unit_vector(self):
+        expected = np.array([2 ** (-1 / 2), 2 ** (-1 / 2), 0])
+        np.testing.assert_array_almost_equal(self.line3.dir_unit_vector(), expected)
+
+    def test_is_collinear(self):
+        # Test collinear lines
+        self.assertTrue(self.line1.is_collinear(self.line1))
+        self.assertTrue(self.line1.is_collinear(self.line6))
+
+        # Test non-collinear lines
+        self.assertFalse(self.line1.is_collinear(self.line2))
+        self.assertFalse(self.line1.is_collinear(self.line5))
+        # Ensure that order of point-coincidence does not break functionality
+        self.assertFalse(self.line1.is_collinear(self.line4))
+        self.assertFalse(self.line1.is_collinear(self.line4.reversed()))
+        self.assertFalse(self.line1.reversed().is_collinear(self.line4))
+        self.assertFalse(self.line1.reversed().is_collinear(self.line4.reversed()))
+
+        # Test error
+        with self.assertRaises(TypeError):
+            self.line1.is_collinear(self.line1._elements)  # type: ignore
+
+    def test_is_parallel(self):
+        # Test parallel lines
+        self.assertTrue(self.line1.is_parallel(self.line1))
+        self.assertTrue(self.line1.is_parallel(self.line6))
+        self.assertTrue(self.line1.is_parallel(self.line5))
+
+        # Test non-parallel lines
+        self.assertFalse(self.line1.is_parallel(self.line2))
+        self.assertFalse(self.line1.is_parallel(self.line4))
+
+        # Test error
+        with self.assertRaises(TypeError):
+            self.line1.is_parallel(self.line1._elements)  # type: ignore
 
     def test_intersect(self):
         # Test intersection of two lines that intersect at a point
