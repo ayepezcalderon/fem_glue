@@ -61,19 +61,20 @@ class Polyline(SequentialGeometry[Line]):
             is_closed = True
         self._is_closed = is_closed
 
-        # Raise error if intersecting but non-intersecting must be enforced
-        if strict_non_intersecting and not self.is_non_intersecting():
-            raise ValueError(
-                "The polyline is self intersecting. "
-                "If this should not raise an error, set 'strict_non_intersecting' to False."
-            )
-
         # Set points
         self._points = [ln[0] for ln in lines]
         if not self.is_closed():
             self._points.append(lines[-1][1])
 
         super().__init__(lines)
+
+        # Raise error if intersecting but non-intersecting must be enforced
+        # Do this after super init so that elements are set for is_non_intersecting caching
+        if strict_non_intersecting and not self.is_non_intersecting():
+            raise ValueError(
+                "The polyline is self intersecting. "
+                "If this should not raise an error, set 'strict_non_intersecting' to False."
+            )
 
     def get_self_intersections(self) -> tuple[list[Point], list[Line]]:
         """
