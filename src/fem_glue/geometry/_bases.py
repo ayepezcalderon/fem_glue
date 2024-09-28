@@ -63,6 +63,12 @@ class SequentialGeometry[T](Sequence[T]):
         """
         return self._elements.count(value)
 
+    def reversed(self) -> Self:
+        """
+        Return a reversed version of the geometry.
+        """
+        return self.__class__(tuple(reversed(self)))
+
     @override
     def __repr__(self):
         return f"{self.__class__}([{', '.join(str(i) for i in self)}])"
@@ -118,7 +124,7 @@ class SequentialGeometry[T](Sequence[T]):
 
         The default generic operation defined here performs "op" between "other" and
         each element of self.
-        
+
         Subclasses may override this function to override the default generic
         operation behavior defined here.
 

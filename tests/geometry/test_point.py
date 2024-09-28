@@ -20,6 +20,9 @@ class TestPoint(unittest.TestCase):
             self.assertNotIn(almost_n, self.point._elements)
             self.assertIn(almost_n, self.point)
 
+    def test_reversed(self):
+        self.assertEqual(self.point.reversed(), Point([5, 4, 3]))
+
     def test_math_errors(self):
         # With list with different number of entries
         other_list = [1, 2, 3, 4]
