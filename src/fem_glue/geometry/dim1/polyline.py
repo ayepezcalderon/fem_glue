@@ -42,15 +42,28 @@ class Polyline(SequentialGeometry[Line]):
     ):
         # Get list of lines from input
         if all(isinstance(e, Point) for e in elements):
+            if len(elements) < 3:
+                raise ValueError(
+                    f"A {self.__class__.__name__} must have at least 3 points."
+                )
+
             lines: list[Line] = lines_from_points(elements)  # type: ignore
+
         elif all(isinstance(e, Line) for e in elements):
             lines: list[Line] = list(elements)  # type: ignore
+
+            if len(lines) < 2:
+                raise ValueError(
+                    f"A {self.__class__.__name__} must have at least 2 lines."
+                )
+
             # Check that lines are connected
             for i in range(len(lines) - 1):
                 if lines[i][1] != lines[i + 1][0]:
                     raise ValueError(
                         f"Line '{i}' is not connected with line '{i + 1}'."
                     )
+
         else:
             raise TypeError("The elements must be either Points or Lines.")
 

@@ -145,6 +145,31 @@ class TestInitErrors(unittest.TestCase):
         ):
             Polyline(points)  # type: ignore
 
+    def test_not_enough_points_init(self):
+        points = [
+            Point([0, 0, 0]),
+            Point([8, 0, 0]),
+        ]
+
+        with self.assertRaisesRegex(
+            ValueError,
+            re.escape(f"A {Polyline.__name__} must have at least 3 points."),
+        ):
+            Polyline(points)
+
+    def test_not_enough_lines_init(self):
+        points = [
+            Point([0, 0, 0]),
+            Point([8, 0, 0]),
+        ]
+        lines = [Line(points)]
+
+        with self.assertRaisesRegex(
+            ValueError,
+            re.escape(f"A {Polyline.__name__} must have at least 2 lines."),
+        ):
+            Polyline(lines)
+
     def test_specified_non_intersecting_error(self):
         points = [
             Point([0, 0, 0]),
