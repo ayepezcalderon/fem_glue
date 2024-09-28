@@ -73,6 +73,12 @@ class Point(SequentialGeometry[float]):
         return self.__class__([op(i, j) for i, j in zip(self, other)])
 
     @override
+    def __contains__(self, value: float) -> bool:
+        value = round(value, CONFIG.precision)
+
+        return super().__contains__(value)
+
+    @override
     def __eq__(self, other: "Point") -> bool:
         """
         Check if two geometries of the same type are equal.

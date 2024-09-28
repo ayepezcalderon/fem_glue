@@ -12,6 +12,14 @@ class TestPoint(unittest.TestCase):
         expected = round((3**2 + 4**2 + 5**2) ** 0.5, CONFIG.precision)
         self.assertEqual(result, expected)
 
+    def test_in_keyword(self):
+        for n in self.point:
+            # Differs from n by less than the config tolerance
+            almost_n = n + 10 ** -(CONFIG.precision + 1)
+
+            self.assertNotIn(almost_n, self.point._elements)
+            self.assertIn(almost_n, self.point)
+
     def test_math_errors(self):
         # With list with different number of entries
         other_list = [1, 2, 3, 4]
