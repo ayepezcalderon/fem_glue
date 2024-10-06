@@ -48,6 +48,23 @@ class Point(SequentialGeometry[float]):
         """
         return np.array(self)
 
+    def round(self, precision: int = CONFIG.precision) -> Self:
+        """
+        Round the entries of the point to a specific precision.
+
+        Parameters
+        ----------
+        precision : int
+            The precision to round to.
+            Default is the precision set in the configuration.
+
+        Returns
+        -------
+        Self
+            The point with rounded entries.
+        """
+        return self.__class__([round(i, precision) for i in self])
+
     @override
     def _generic_operation(
         self,

@@ -9,7 +9,7 @@ from fem_glue.geometry._bases import SequentialGeometry
 from fem_glue.geometry import Point
 from fem_glue._config import CONFIG
 from fem_glue._utils import tol_compare
-from fem_glue.geometry._exceptions import PointOnLineError, PointNotOnLineError
+from fem_glue.geometry._exceptions import PointOnShapeError, PointNotOnShapeError
 
 
 class Line(SequentialGeometry[Point]):
@@ -88,13 +88,14 @@ class Line(SequentialGeometry[Point]):
         projected_point = self[0] + list(projection_vector)
 
         # Handle case where the point is on the ray of the line
-        if np.allclose(np.array(point), projected_point.as_array()):
+        if np.allclose(point.as_array(), projected_point.as_array(), atol=CONFIG.tol):
             if point_is_on_ray == "raise":
-                raise ValueError("The point is on the ray of the line.")
+                raise PointOnShapeError("The point is on the ray of the line.")
             if point_is_on_ray == "self":
                 return point
 
-        return projected_point
+        # Rounding to 5 decimals seems to behave better than to more decimals
+        return projected_point.round(5)
 
     def point_position_on_ray(
         self,
@@ -188,7 +189,7 @@ class Line(SequentialGeometry[Point]):
             projection_pos_on_ray, 1, op="ge"
         ):
             if projection_is_not_on_line == "raise":
-                raise PointNotOnLineError(
+                raise PointNotOnShapeError(
                     "The projection of the point is not on the line."
                 )
             if projection_is_not_on_line == "null":
@@ -197,7 +198,7 @@ class Line(SequentialGeometry[Point]):
         # If projection is on line and is equal to the point, point is on line
         if point_projection_on_ray == point:
             if point_is_on_line == "raise":
-                raise PointOnLineError("The point is on the line.")
+                raise PointOnShapeError("The point is on the line.")
             if point_is_on_line == "self":
                 return point
 
