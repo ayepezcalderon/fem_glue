@@ -43,7 +43,11 @@ class Point(SequentialGeometry[float]):
         return np.array(self / self.norm())
 
     @override
-    def _generic_operation(self, other: float | Sequence[float], op: Callable) -> Self:
+    def _generic_operation(
+        self,
+        other: float | Sequence[float],
+        op: Callable[[float, float], float],
+    ) -> Self:
         """Special function that defines how the mathematical operator "op"
         (eg. op == operator.__add__), which relates to a dunder (eg. __add__) behaves.
 

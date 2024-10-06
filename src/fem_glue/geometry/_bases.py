@@ -118,7 +118,11 @@ class SequentialGeometry[T](Sequence[T]):
     def __hash__(self) -> int:
         return hash(self._elements)
 
-    def _generic_operation(self, other: float | Sequence[float], op: Callable) -> Self:
+    def _generic_operation(
+        self,
+        other: float | Sequence[float],
+        op: Callable[[T, float | Sequence[float]], Self],
+    ) -> Self:
         """Special function that defines how the mathematical operator "op"
         (eg. op == operator.__add__), which relates to a dunder (eg. __add__) behaves.
 
@@ -132,7 +136,7 @@ class SequentialGeometry[T](Sequence[T]):
         ----------
         other : float | Sequence[float]
             The arithmetic operation acts on this data structure and self.
-        op : Callable
+        op : Callable[T, float | Sequence[float]]
             The arithmetic operation to perform.
 
         Returns
@@ -177,10 +181,3 @@ class SequentialGeometry[T](Sequence[T]):
             return NotImplemented
 
         return self.__class__([operator.pow(i, other) for i in self])
-
-    #
-    # @abstractmethod
-    # def to_fenics(self): ...
-    #
-    # @abstractmethod
-    # def to_mesh(self): ...
