@@ -1,6 +1,6 @@
-class PointOnLineError(Exception):
-    """Raise when a point is on a line and this is not allowed."""
+class PointOnShapeError(Exception):
+    """Raise when a point is on a shape and this is not allowed."""
 
 
-class PointNotOnLineError(Exception):
-    """Raise when a point was expected to be on a line but is not."""
+class PointNotOnShapeError(Exception):
+    """Raise when a point was expected to be on a shape but is not."""
