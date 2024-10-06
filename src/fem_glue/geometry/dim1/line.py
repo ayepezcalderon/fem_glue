@@ -80,7 +80,7 @@ class Line(SequentialGeometry[Point]):
 
         # Projection vector of the vector above onto the ray of the line
         projection_vector = (
-            np.dot(line_to_point_vector, self.dir_unit_vector())
+            np.dot(line_to_point_vector.as_array(), self.dir_unit_vector())
             * self.dir_unit_vector()
         )
 
@@ -88,7 +88,7 @@ class Line(SequentialGeometry[Point]):
         projected_point = self[0] + list(projection_vector)
 
         # Handle case where the point is on the ray of the line
-        if np.allclose(np.array(point), projected_point):
+        if np.allclose(np.array(point), projected_point.as_array()):
             if point_is_on_ray == "raise":
                 raise ValueError("The point is on the ray of the line.")
             if point_is_on_ray == "self":
@@ -138,7 +138,7 @@ class Line(SequentialGeometry[Point]):
             if point_is_not_on_ray == "null":
                 return None
 
-        normalized_position = np.dot(point - self[0], self.dir_unit_vector())
+        normalized_position = np.dot(np.array(point - self[0]), self.dir_unit_vector())
 
         return (
             normalized_position if normalized else normalized_position * self.length()
@@ -331,7 +331,7 @@ class Line(SequentialGeometry[Point]):
         # If cross product of direction vector and vector between points is not zero,
         # lines are not collinear
         are_collinear = (
-            np.linalg.norm(np.cross(v1.as_vector(), interpoint_vector)) < tol
+            np.linalg.norm(np.cross(v1.as_vector(), interpoint_vector.as_array())) < tol
         )
 
         assert isinstance(are_collinear, np.bool_)

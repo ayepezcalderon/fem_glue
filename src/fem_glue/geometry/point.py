@@ -42,6 +42,12 @@ class Point(SequentialGeometry[float]):
         """
         return np.array(self / self.norm())
 
+    def as_array(self) -> np.ndarray:
+        """
+        Convert the point to a numpy array.
+        """
+        return np.array(self)
+
     @override
     def _generic_operation(
         self,
