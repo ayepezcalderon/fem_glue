@@ -1,4 +1,7 @@
 import math
+
+import numpy as np
+
 from typing import override, Self, Callable
 from collections.abc import Sequence
 
@@ -31,11 +34,11 @@ class Point(SequentialGeometry[float]):
         """
         return round(math.hypot(*self), CONFIG.precision)
 
-    def normalize(self) -> Self:
+    def normalize(self) -> np.ndarray:
         """
         Normalize the point such that the origin and the point define a unit vector.
         """
-        return self / self.norm()
+        return np.array(self / self.norm())
 
     @override
     def _generic_operation(self, other: float | Sequence[float], op: Callable) -> Self:
