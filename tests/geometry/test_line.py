@@ -28,7 +28,7 @@ class TestLine(unittest.TestCase):
 
     def test_dir_vector(self):
         expected = np.array([1, 1, 0])
-        np.testing.assert_array_equal(self.line3.dir_vector(), expected)
+        np.testing.assert_array_equal(self.line3.as_vector(), expected)
 
     def test_dir_unit_vector(self):
         expected = np.array([2 ** (-1 / 2), 2 ** (-1 / 2), 0])

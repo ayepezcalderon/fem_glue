@@ -2,7 +2,8 @@ import functools
 import math
 import numpy as np
 
-from typing import override, Self
+from typing import override, Self, Literal
+from collections.abc import Sequence
 
 from fem_glue.geometry._bases import SequentialGeometry
 from fem_glue.geometry import Point
@@ -14,6 +15,13 @@ class Line(SequentialGeometry[Point]):
     """
     A straight line with 2 points.
     """
+
+    def __init__(self, elements: Sequence[Point], /):
+        # Check that the points in the line are not the same
+        if elements[0] == elements[1]:
+            raise ValueError("A line cannot be constructed from two identical points.")
+
+        super().__init__(elements)
 
     @override
     def __len__(self) -> int:
@@ -31,9 +39,9 @@ class Line(SequentialGeometry[Point]):
         """
         return self / self.length()
 
-    def dir_vector(self) -> np.ndarray:
+    def as_vector(self) -> np.ndarray:
         """
-        Return the direction vector of the line.
+        Return the line as a vector centered at the origin.
         """
         return np.array(self[1] - self[0])
 
@@ -41,7 +49,185 @@ class Line(SequentialGeometry[Point]):
         """
         Calculate the unit direction vector of the line.
         """
-        return self.dir_vector() / self.length()
+        return self.as_vector() / self.length()
+
+    def point_projection_on_ray(
+        self,
+        point: Point,
+        point_is_on_ray: Literal["self", "raise"] = "self",
+    ) -> Point:
+        """
+        Calculate the projection of the given point onto the ray of the line.
+
+        Parameters
+        ----------
+        point : Point
+            The point to project onto the ray of the line.
+        point_is_on_ray : Literal["self", "raise"]
+            Specifies the behavior when the given point is on the ray of the line.
+            If "self", the given point is returned.
+            If "raise", an error is raised.
+            Default is "null".
+
+        Returns
+        -------
+        Point
+            The projection of the given point onto the ray of the line.
+        """
+        # Vector between the start point of the line and the given point
+        line_to_point_vector = point - self[0]
+
+        # Projection vector of the vector above onto the ray of the line
+        projection_vector = (
+            np.dot(line_to_point_vector, self.dir_unit_vector())
+            * self.dir_unit_vector()
+        )
+
+        # Given point projected onto the ray of the line
+        projected_point = self[0] + projection_vector
+
+        # Check if the point is on the ray of the line
+        # If it is, handle the situation as specified
+        if np.allclose(np.array(point), projected_point):
+            if point_is_on_ray == "self":
+                return point
+            if point_is_on_ray == "raise":
+                raise ValueError("The point is on the ray of the line.")
+
+        return projected_point
+
+    def point_position_on_ray(
+        self,
+        point: Point,
+        normalized: bool = True,
+        not_on_ray: Literal["null", "raise", "project"] = "null",
+    ) -> float | None:
+        """
+        Calculate the position of the point on the coordinate system of the ray of the line.
+        This 1D coordinate system is defined on the direction of the line and has the
+        origin on the start point of the line.
+        The coordinate system is also normalized such that its unit length is
+        equal to the length of the line unless otherwise specified.
+
+        Parameters
+        ----------
+        point : Point
+            The point to check.
+        normalized : bool
+            Specifies wether the coordinate system is normalized such that its unit
+            length is equal to the length of the line.
+            Default is True.
+        not_on_ray : Literal["null", "raise", "project"]
+            Defines the behavior when the given point is not on the ray of the line.
+            If "null", None is returned.
+            If "raise", an error is raised.
+            If "project", the position of the point is projected onto the ray of the
+            line, and the position of the projection is returned.
+            Default is "null".
+
+        Returns
+        -------
+        float | None
+            The position of the point (or its projection) on the
+            (potentially normalized) coordinate system.
+            If not_on_ray is "null" and the point is not on the ray of the line, None.
+        """
+        # Check if the point is on the ray of the line
+        # If it is not, handle the situation as specified
+        new_line = Line([self[0], point])
+        if not np.allclose(
+            self.dir_unit_vector(), new_line.dir_unit_vector(), atol=CONFIG.tol
+        ):
+            if not_on_ray == "null":
+                return None
+            if not_on_ray == "raise":
+                raise ValueError("The point is not on the ray of the line.")
+            if not_on_ray == "project":
+                point = self.point_projection_on_ray(point, point_is_on_ray="raise")
+
+        normalized_position = np.dot(point - self[0], self.dir_unit_vector())
+
+        return (
+            normalized_position if normalized else normalized_position * self.length()
+        )
+
+    def contains_point(self, point: Point, count_endpoints: bool = True) -> bool:
+        """
+        Check if the line contains the given point.
+
+        Parameters
+        ----------
+        point : Point
+            The point to check.
+        count_endpoints : bool
+            If the point coincides with an endpoint of the line, specifies whether
+            the line is considered to contain the point.
+
+        Returns
+        -------
+        bool
+            True if the line contains the point, False otherwise.
+        """
+        if point in self:
+            return count_endpoints
+
+        pos_on_ray = self.point_position_on_ray(
+            point, normalized=True, not_on_ray="null"
+        )
+
+        # Normal comparison is possible since "in" operation checked for tolerance
+        return pos_on_ray is not None and 0 < pos_on_ray < 1
+
+    def shortest_line_to_point(
+        self,
+        point: Point,
+        point_is_on_line: Literal["null", "raise"] = "null",
+    ) -> Self | None:
+        """
+        Calculate the shortest line between the line and the given point.
+        Start point is point on line, end point is given point.
+
+        TODO: make the implementation more efficient (less repeated operations)
+
+        Parameters
+        ----------
+        point : Point
+            The point to which the shortest line is calculated.
+        point_is_on_line : Literal["null", "raise"]
+            Specifies the behavior when the given point is on the line.
+            If "null", None is returned.
+            If "raise", an error is raised.
+            Default is "null".
+
+        Returns
+        -------
+        Self | None
+            The shortest line between the line and the point.
+        """
+        # Handle case where point is on line
+        if self.contains_point(point, count_endpoints=True):
+            if point_is_on_line == "null":
+                return None
+            if point_is_on_line == "raise":
+                raise ValueError("The point is on the line.")
+
+        pos_on_ray = self.point_position_on_ray(
+            point, normalized=True, not_on_ray="project"
+        )
+        assert isinstance(pos_on_ray, float)
+
+        # If the projection of the point onto the ray is outside the line,
+        # then the point on the line is the closest endpoint
+        if tol_compare(pos_on_ray, 0, op="le"):
+            return self.__class__([self[0], point])
+        if tol_compare(pos_on_ray, 1, op="ge"):
+            return self.__class__([self[1], point])
+
+        # If the projection of the point is inside the line,
+        # then the point on the line is the projection
+        point_on_line = self.point_projection_on_ray(point, point_is_on_ray="raise")
+
+        return self.__class__([point_on_line, point])
 
     def is_parallel(self, other: "Line", tol: float = CONFIG.tol) -> bool:
         """
@@ -65,7 +251,7 @@ class Line(SequentialGeometry[Point]):
 
         # If cross product of direction vectors is zero, lines are parallel
         are_parallel = (
-            np.linalg.norm(np.cross(self.dir_vector(), other.dir_vector())) < tol
+            np.linalg.norm(np.cross(self.as_vector(), other.as_vector())) < tol
         )
 
         assert isinstance(are_parallel, np.bool_)
@@ -104,7 +290,7 @@ class Line(SequentialGeometry[Point]):
         # If cross product of direction vector and vector between points is not zero,
         # lines are not collinear
         are_collinear = (
-            np.linalg.norm(np.cross(v1.dir_vector(), interpoint_vector)) < tol
+            np.linalg.norm(np.cross(v1.as_vector(), interpoint_vector)) < tol
         )
 
         assert isinstance(are_collinear, np.bool_)
