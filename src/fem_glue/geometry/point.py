@@ -14,6 +14,8 @@ class Point(SequentialGeometry[float]):
     A point in 3D space.
     """
 
+    __hash__ = SequentialGeometry.__hash__
+
     def __init__(self, elements: Sequence[float], /):
         elements = [float(round(i, CONFIG.precision)) for i in elements]
         super().__init__(elements)
@@ -93,8 +95,6 @@ class Point(SequentialGeometry[float]):
             math.isclose(i, j, abs_tol=CONFIG.tol)
             for i, j in zip(self, other, strict=True)
         )
-
-    __hash__ = SequentialGeometry.__hash__
 
     @override
     def __ne__(self, other: Self) -> bool:

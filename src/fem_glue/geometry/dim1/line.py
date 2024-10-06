@@ -9,6 +9,7 @@ from fem_glue.geometry._bases import SequentialGeometry
 from fem_glue.geometry import Point
 from fem_glue._config import CONFIG
 from fem_glue._utils import tol_compare
+from fem_glue.geometry._exceptions import PointOnLineError, PointNotOnLineError
 
 
 class Line(SequentialGeometry[Point]):
@@ -84,7 +85,7 @@ class Line(SequentialGeometry[Point]):
         )
 
         # Given point projected onto the ray of the line
-        projected_point = self[0] + projection_vector
+        projected_point = self[0] + list(projection_vector)
 
         # Handle case where the point is on the ray of the line
         if np.allclose(np.array(point), projected_point):
@@ -187,14 +188,16 @@ class Line(SequentialGeometry[Point]):
             projection_pos_on_ray, 1, op="ge"
         ):
             if projection_is_not_on_line == "raise":
-                raise ValueError("The projection of the point is not on the line.")
+                raise PointNotOnLineError(
+                    "The projection of the point is not on the line."
+                )
             if projection_is_not_on_line == "null":
                 return None
 
-        # Handle case where point is on line
+        # If projection is on line and is equal to the point, point is on line
         if point_projection_on_ray == point:
             if point_is_on_line == "raise":
-                raise ValueError("The point is on the line.")
+                raise PointOnLineError("The point is on the line.")
             if point_is_on_line == "self":
                 return point
 
@@ -244,6 +247,34 @@ class Line(SequentialGeometry[Point]):
         # If the projection of the point is on the line, the projection defines
         # the shortest line to the point
         return self.__class__([point_projection_on_line, point])
+
+    def point_is_on_line(self, point: Point, if_on_endpoint: bool = False) -> bool:
+        """
+        Check if a point is on the line.
+
+        Parameters
+        ----------
+        point : Point
+            The point to check.
+        if_on_endpoint : bool
+            Specifies the return value if the point is on an endpoint of the line.
+
+        Returns
+        -------
+        bool
+            True if the point is on the line, False otherwise.
+        """
+        # If the point is on an endpoint, return according to the specified protocol
+        if point in self:
+            return if_on_endpoint
+
+        try:
+            _ = self.get_point_projection_on_line(
+                point, point_is_on_line="raise", projection_is_not_on_line="null"
+            )
+        except PointOnLineError:
+            return True
+        return False
 
     def is_parallel(self, other: "Line", tol: float = CONFIG.tol) -> bool:
         """
