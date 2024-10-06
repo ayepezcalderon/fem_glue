@@ -100,17 +100,21 @@ class TestLine(unittest.TestCase):
         projection = self.line1.get_point_projection_on_ray(point)
         self.assertEqual(projection, Point([0.5, 0.5, 0]))
 
-        # Projection is outside line, return self
+        # Projection is on ray outside line, "self" behavior
         point = Point([2, 2, 0])
-        projection = self.line1.get_point_projection_on_ray(point)
-        self.assertEqual(projection, point)
+        projection = self.line1.get_point_projection_on_ray(
+            point, point_is_on_ray="self"
+        )
+        self.assertIs(projection, point)
 
-        # Point is on ray inside line, return self
+        # Point is on ray inside line
+        # "self" behavior
         point = Point([0.5, 0.5, 0])
-        projection = self.line1.get_point_projection_on_ray(point)
-        self.assertEqual(projection, point)
-
-        # Point is on ray, raise error
+        projection = self.line1.get_point_projection_on_ray(
+            point, point_is_on_ray="self"
+        )
+        self.assertIs(projection, point)
+        # raise" error
         with self.assertRaises(PointOnShapeError):
             self.line1.get_point_projection_on_ray(point, point_is_on_ray="raise")
 
@@ -136,6 +140,40 @@ class TestLine(unittest.TestCase):
         # Point not on ray, "raise" behavior
         with self.assertRaises(PointNotOnShapeError):
             _ = ref_line.get_point_position_on_ray(point, point_is_not_on_ray="raise")
+
+    def test_get_point_projection_on_line(self):
+        # Projection inside line
+        point = Point([1, 0, 0])
+        projection = self.line1.get_point_projection_on_line(point)
+        self.assertEqual(projection, Point([0.5, 0.5, 0]))
+
+        # Point is on line
+        point = Point([0.5, 0.5, 0])
+        # "self" behavior
+        projection = self.line1.get_point_projection_on_line(
+            point, point_is_on_line="self"
+        )
+        self.assertIs(projection, point)
+        # "raise" behavior
+        with self.assertRaises(PointOnShapeError):
+            _ = self.line1.get_point_projection_on_line(point, point_is_on_line="raise")
+
+        # Projection outside line, one point outside ray and another on ray
+        points = [
+            Point([3, 0, 0]),
+            Point([2, 2, 0]),
+        ]
+        for point in points:
+            # "null" behavior
+            projection = self.line1.get_point_projection_on_line(
+                point, projection_is_not_on_line="null"
+            )
+            self.assertIsNone(projection)
+            # "raise" behavior
+            with self.assertRaises(PointNotOnShapeError):
+                _ = self.line1.get_point_projection_on_line(
+                    point, projection_is_not_on_line="raise"
+                )
 
 
 class TestLineArithmeticOperations(unittest.TestCase):
