@@ -268,13 +268,7 @@ class Line(SequentialGeometry[Point]):
         if point in self:
             return if_on_endpoint
 
-        try:
-            _ = self.get_point_projection_on_line(
-                point, point_is_on_line="raise", projection_is_not_on_line="null"
-            )
-        except PointOnLineError:
-            return True
-        return False
+        return point == self.get_point_projection_on_line(point)
 
     def is_parallel(self, other: "Line", tol: float = CONFIG.tol) -> bool:
         """
