@@ -209,7 +209,7 @@ class TestInitErrors(unittest.TestCase):
             Polyline(lines)
 
 
-class TestOperations(unittest.TestCase):
+class TestArithmeticOperations(unittest.TestCase):
     def setUp(self):
         self.polyline = Polyline(
             [Point([3, 4, 5]), Point([6, 8, 10]), Point([9, 12, 15])]

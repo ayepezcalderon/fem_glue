@@ -1,9 +1,11 @@
+import math
 import unittest
 
 import numpy as np
 
 from fem_glue.geometry import Point, Line
 from fem_glue._config import CONFIG
+from fem_glue.geometry._exceptions import PointOnShapeError, PointNotOnShapeError
 
 
 class TestLine(unittest.TestCase):
@@ -26,7 +28,7 @@ class TestLine(unittest.TestCase):
     def test_length(self):
         self.assertEqual(self.line1.length(), round(2**0.5, CONFIG.precision))
 
-    def test_dir_vector(self):
+    def test_as_vector(self):
         expected = np.array([1, 1, 0])
         np.testing.assert_array_equal(self.line3.as_vector(), expected)
 
@@ -87,12 +89,56 @@ class TestLine(unittest.TestCase):
             Line([Point([0.5, 0.5, 0]), Point([1, 1, 0])]),
         )
 
-    def test_normalize(self):
-        normalized_line = self.line1.normalize()
-        self.assertEqual(normalized_line.length(), 1)
+    def test_get_point_projection_on_ray(self):
+        # Projection outside line
+        point = Point([2, 0, 0])
+        projection = self.line1.get_point_projection_on_ray(point)
+        self.assertEqual(projection, Point([1, 1, 0]))
+
+        # Projection inside line
+        point = Point([1, 0, 0])
+        projection = self.line1.get_point_projection_on_ray(point)
+        self.assertEqual(projection, Point([0.5, 0.5, 0]))
+
+        # Projection is outside line, return self
+        point = Point([2, 2, 0])
+        projection = self.line1.get_point_projection_on_ray(point)
+        self.assertEqual(projection, point)
+
+        # Point is on ray inside line, return self
+        point = Point([0.5, 0.5, 0])
+        projection = self.line1.get_point_projection_on_ray(point)
+        self.assertEqual(projection, point)
+
+        # Point is on ray, raise error
+        with self.assertRaises(PointOnShapeError):
+            self.line1.get_point_projection_on_ray(point, point_is_on_ray="raise")
+
+    def test_get_point_position_on_ray(self):
+        ref_line = self.line1 * 2
+
+        # Position of point on normalized coordinate system
+        point = Point([3, 3, 0])
+        position = ref_line.get_point_position_on_ray(point, normalized=True)
+        assert isinstance(position, float)
+        self.assertAlmostEqual(position, 1.5, places=CONFIG.precision)
+
+        # Position of point on non-normalized coordinate system
+        position = ref_line.get_point_position_on_ray(point, normalized=False)
+        assert isinstance(position, float)
+        self.assertAlmostEqual(position, 3 * math.sqrt(2), places=CONFIG.precision)
+
+        # Point not on ray, "null" behavior
+        point = Point([3, 4, 0])
+        position = ref_line.get_point_position_on_ray(point, point_is_not_on_ray="null")
+        self.assertIsNone(position)
+
+        # Point not on ray, "raise" behavior
+        with self.assertRaises(PointNotOnShapeError):
+            _ = ref_line.get_point_position_on_ray(point, point_is_not_on_ray="raise")
 
 
-class TestLineOperations(unittest.TestCase):
+class TestLineArithmeticOperations(unittest.TestCase):
     def setUp(self):
         self.line = Line([Point([3, 4, 5]), Point([6, 8, 10])])
 

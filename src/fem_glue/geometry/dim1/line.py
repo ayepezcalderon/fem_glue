@@ -36,7 +36,7 @@ class Line(SequentialGeometry[Point]):
 
     def normalize(self) -> Self:
         """
-        Normalize the line such that its ends define a unit vector.
+        Normalize the line such that its ends define a unit line.
         """
         return self / self.length()
 
@@ -94,10 +94,10 @@ class Line(SequentialGeometry[Point]):
             if point_is_on_ray == "self":
                 return point
 
-        # Rounding to 5 decimals seems to behave better than to more decimals
-        return projected_point.round(5)
+        # Rounding to 1 less decimal than the config seems to behave better
+        return projected_point.round(CONFIG.precision - 1)
 
-    def point_position_on_ray(
+    def get_point_position_on_ray(
         self,
         point: Point,
         normalized: bool = True,
@@ -135,14 +135,15 @@ class Line(SequentialGeometry[Point]):
             self.dir_unit_vector(), new_line.dir_unit_vector(), atol=CONFIG.tol
         ):
             if point_is_not_on_ray == "raise":
-                raise ValueError("The point is not on the ray of the line.")
+                raise PointNotOnShapeError("The point is not on the ray of the line.")
             if point_is_not_on_ray == "null":
                 return None
 
-        normalized_position = np.dot(np.array(point - self[0]), self.dir_unit_vector())
+        position = np.dot(np.array(point - self[0]), self.dir_unit_vector())
 
-        return (
-            normalized_position if normalized else normalized_position * self.length()
+        return round(
+            position / self.length() if normalized else position,
+            CONFIG.precision,
         )
 
     def get_point_projection_on_line(
@@ -178,7 +179,7 @@ class Line(SequentialGeometry[Point]):
             point, point_is_on_ray="self"
         )
 
-        projection_pos_on_ray = self.point_position_on_ray(
+        projection_pos_on_ray = self.get_point_position_on_ray(
             point_projection_on_ray, normalized=True, point_is_not_on_ray="null"
         )
         # Finding position of projection, so it must be on the ray
