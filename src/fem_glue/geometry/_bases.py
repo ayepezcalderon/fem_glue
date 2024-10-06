@@ -148,32 +148,36 @@ class SequentialGeometry[T](Sequence[T]):
         return self.__class__([op(i, other) for i in self])
 
     @staticmethod
-    def _math_operation(f: Callable) -> Callable:
-        # Find operator from function name
-        op = getattr(operator, f.__name__.strip("__"))
+    def _math_operation():
+        def decorator(
+            f: Callable[[Self, float | Sequence[float]], Self],
+        ) -> Callable[[Self, float | Sequence[float]], Self]:
+            # Find operator from function name
+            op = getattr(operator, f.__name__.strip("__"))
 
-        @functools.wraps(f)
-        def wrapper(self: Self, other: float | Sequence[float]) -> Self:
-            if not isinstance(other, float | int | Sequence):
-                return NotImplemented
+            def wrapper(self: Self, other: float | Sequence[float]) -> Self:
+                if not isinstance(other, float | int | Sequence):
+                    return NotImplemented
 
-            return self._generic_operation(other, op)
+                return self._generic_operation(other, op)
 
-        return wrapper
+            return wrapper
 
-    @_math_operation
+        return decorator
+
+    @_math_operation()
     def __add__(self, other: float | Sequence[float]) -> Self: ...
 
-    @_math_operation
+    @_math_operation()
     def __sub__(self, other: float | Sequence[float]) -> Self: ...
 
-    @_math_operation
+    @_math_operation()
     def __mul__(self, other: float | Sequence[float]) -> Self: ...
 
-    @_math_operation
+    @_math_operation()
     def __truediv__(self, other: float | Sequence[float]) -> Self: ...
 
-    @_math_operation
+    @_math_operation()
     def __floordiv__(self, other: float | Sequence[float]) -> Self: ...
 
     def __pow__(self, other: float) -> Self:
