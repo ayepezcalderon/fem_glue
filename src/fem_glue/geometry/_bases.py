@@ -5,7 +5,6 @@ from typing import Self, overload, override
 from collections.abc import Callable, Sequence, Iterator
 from abc import abstractmethod
 
-
 class SequentialGeometry[T](Sequence[T]):
     """
     Abstract base class for all geometries.
@@ -148,13 +147,11 @@ class SequentialGeometry[T](Sequence[T]):
         return self.__class__([op(i, other) for i in self])
 
     @staticmethod
-    def _math_operation():
+    def _math_operation(op: Callable):
         def decorator(
             f: Callable[[Self, float | Sequence[float]], Self],
         ) -> Callable[[Self, float | Sequence[float]], Self]:
-            # Find operator from function name
-            op = getattr(operator, f.__name__.strip("__"))
-
+            @functools.wraps(f)
             def wrapper(self: Self, other: float | Sequence[float]) -> Self:
                 if not isinstance(other, float | int | Sequence):
                     return NotImplemented
@@ -165,19 +162,19 @@ class SequentialGeometry[T](Sequence[T]):
 
         return decorator
 
-    @_math_operation()
+    @_math_operation(operator.add)
     def __add__(self, other: float | Sequence[float]) -> Self: ...
 
-    @_math_operation()
+    @_math_operation(operator.sub)
     def __sub__(self, other: float | Sequence[float]) -> Self: ...
 
-    @_math_operation()
+    @_math_operation(operator.mul)
     def __mul__(self, other: float | Sequence[float]) -> Self: ...
 
-    @_math_operation()
+    @_math_operation(operator.truediv)
     def __truediv__(self, other: float | Sequence[float]) -> Self: ...
 
-    @_math_operation()
+    @_math_operation(operator.floordiv)
     def __floordiv__(self, other: float | Sequence[float]) -> Self: ...
 
     def __pow__(self, other: float) -> Self:
