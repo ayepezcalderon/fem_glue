@@ -1,3 +1,3 @@
-from fem_glue.geometry.dim2.surface import Surface
+from fem_glue.geometry.dim2.surface import Polygon
 
-__all__ = ["Surface"]
+__all__ = ["Polygon"]
