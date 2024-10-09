@@ -1,3 +1,7 @@
+"""
+Defines the behavior of the Line class, which defines straight lines in 3D space
+"""
+
 import functools
 import math
 import numpy as np
@@ -14,7 +18,7 @@ from fem_glue.geometry._exceptions import PointOnShapeError, PointNotOnShapeErro
 
 class Line(SequentialGeometry[Point]):
     """
-    A straight line with 2 points.
+    A straight line defined by 2 points in 3D space.
     """
 
     def __init__(self, elements: Sequence[Point], /):

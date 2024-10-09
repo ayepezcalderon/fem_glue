@@ -13,6 +13,22 @@ from fem_glue._config import CONFIG
 class Polygon(SequentialGeometry[Line]):
     """
     A planar polygon in 3D space.
+    The boundary must be a closed and non-self-intersecting polyline.
+    Each line in the boundary must lie in the same 2D plane in 3D space.
+
+    Attributes
+    ----------
+    boundary : Polyline
+        The boundary of the polygon.
+    tangents : np.ndarray
+        2x3 array. Contains two 1x3 sub-arrays that define unit vectors tangent to the
+        plane of the polygon and are orthogonal to each other.
+    normal : np.ndarray
+        1x3 array that defines the normal unit vector to the plane of the polygon.
+    basis : np.ndarray
+        3x3 array. The first two sub-arrays correspond to "tangents", and the
+        third corresponds to "normal". The 3 together define the orthogonal basis
+        for the local coordinate system of the plane of the polygon.
     """
 
     @overload

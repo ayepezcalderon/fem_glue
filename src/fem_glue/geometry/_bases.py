@@ -1,3 +1,7 @@
+"""
+Defines private abstract base classes from which classes of the public API are derived.
+"""
+
 import functools
 import operator
 
@@ -5,9 +9,17 @@ from typing import Self, overload, override
 from collections.abc import Callable, Sequence, Iterator
 from abc import abstractmethod
 
+
 class SequentialGeometry[T](Sequence[T]):
     """
-    Abstract base class for all geometries.
+    Abstract base class for geometries that can be defined by a sequence of similar 
+    quantities.
+
+    For example, a Line can be defined by a Sequence of 2 Points, and a Point can be
+    defined as a sequence of 3 floats.
+
+    As a counter-example, a circle cannot be defined by this way, since its 
+    position in space (a Point) and its radius (a float) are not similar quantities.
     """
 
     def __init__(self, elements: Sequence[T], /):
