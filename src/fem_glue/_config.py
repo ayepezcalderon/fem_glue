@@ -6,6 +6,24 @@ _CONFIG_FILE_NAME = "femglue.json"
 
 
 class _Configuration(BaseModel):
+    """
+    Singleton containing default configuration parameters. 
+    For example, the floating point precision of mathematical operations.
+
+    If femglue.json is defined in the current working directory,
+    this configuration defines the values of this configuration singleton.
+    Otherwise, the default values of the singleton are used.
+
+    Attributes
+    ----------
+    precision : int
+        The number of decimal places for floats in the package.
+        By default 6.
+    tol : float
+        The inverse of precision. 
+        Quantities smaller than this one are considered to be approximately zero.
+        By default 1e-6
+    """
     precision: int = Field(default=6)
 
     def __new__(cls, *args, **kwargs) -> Self:
