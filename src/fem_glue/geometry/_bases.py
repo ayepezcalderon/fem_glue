@@ -155,7 +155,7 @@ class SequentialGeometry[T](Sequence[T]):
             The result of the arithmetic operation.
         """
 
-        return self.__class__([op(i, other) for i in self])
+        return self.__class__([op(i, other) for i in self])  # pyright: ignore[reportArgumentType] -> somehow doesn't bother in neovim but yes in command line
 
     @staticmethod
     def _math_operation(op: Callable):
