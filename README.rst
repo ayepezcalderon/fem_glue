@@ -1,49 +1,42 @@
-.. These are examples of badges you might want to add to your README:
-   please update the URLs accordingly
-
-    .. image:: https://api.cirrus-ci.com/github/<USER>/fem_glue.svg?branch=main
-        :alt: Built Status
-        :target: https://cirrus-ci.com/github/<USER>/fem_glue
-    .. image:: https://readthedocs.org/projects/fem_glue/badge/?version=latest
-        :alt: ReadTheDocs
-        :target: https://fem_glue.readthedocs.io/en/stable/
-    .. image:: https://img.shields.io/coveralls/github/<USER>/fem_glue/main.svg
-        :alt: Coveralls
-        :target: https://coveralls.io/r/<USER>/fem_glue
-    .. image:: https://img.shields.io/pypi/v/fem_glue.svg
-        :alt: PyPI-Server
-        :target: https://pypi.org/project/fem_glue/
-    .. image:: https://img.shields.io/conda/vn/conda-forge/fem_glue.svg
-        :alt: Conda-Forge
-        :target: https://anaconda.org/conda-forge/fem_glue
-    .. image:: https://pepy.tech/badge/fem_glue/month
-        :alt: Monthly Downloads
-        :target: https://pepy.tech/project/fem_glue
-    .. image:: https://img.shields.io/twitter/url/http/shields.io.svg?style=social&label=Twitter
-        :alt: Twitter
-        :target: https://twitter.com/fem_glue
-
-.. image:: https://img.shields.io/badge/-PyScaffold-005CA0?logo=pyscaffold
-    :alt: Project generated with PyScaffold
-    :target: https://pyscaffold.org/
-
-|
-
 ========
 fem_glue
 ========
 
+Welcome! fem_glue is (or will be, it is currently in an early stage of development) a package for setting up finite element method (FEM) problems through a simple API. 
 
-    Add a short description here!
-
-
-A longer description of your project goes here...
-
-
-.. _pyscaffold-notes:
+The aim of fem_glue is to empower anyone to set up FEM problems with complex geometries and boundary conditions with relative ease.
+There already exists extraordinary open-source FEM packages like fenicsx, and in fact, fem_glue will delegate most of the numerical heavy lifting to these packages.
+Packages like fenicsx are great for setting up research and academic problems, but they are not so straightforward for setting up complex geometries, like those of buildings for example.
+Furthermore, a relatively deep understanding of FEM is generally necessary for using something like fenicsx.
+Therefore, the purpose of fem_glue is to simplify the process of setting up FEM problems so that it can be used in day-to-day FEM workflows by regular engineers and FEM enthusiasts.
 
 Note
 ====
+This package is still at an early stage of development, so its end-goal functionality still has to be achieved.
 
-This project has been set up using PyScaffold 4.5. For details and usage
-information on PyScaffold see https://pyscaffold.org/.
+Currently, the _geometry_ package of fem_glue is being developed. 
+This package defines shapes in 3D space and operations between them. 
+For example, finding the intersection between lines and polygons.
+This functionality is similar to that of the _shapely_ package, but for 3D space.
+Eventually, the _geometry_ sub-package will become its own standalone package and repository, but for this early stage its happy where it is.
+
+After the _geometry_ package is done, a package for defining meshes from the geometry will be written.
+This package will collect all the metadata for meshing, and delegate the actual meshing to a well-established meshing software such as _gmsh_.
+
+Once the _geometry_ and meshing packages are complete, the actual _fem_glue_ will be developed.
+This package will use the other two packages for defining geometries and meshes.
+It will define finite element shapes and boundary conditions that can then be delegated to well-established solvers like _fenicsx_.
+
+Installation
+====
+To install the package as a user run the following command at the top-level of the repository:
+```
+pip install .
+```
+
+To install it as a developer run the following command instead:
+```
+pip install -e .[testing,dev]
+```
+
+ .. include:: CONTRIBUTING.rst

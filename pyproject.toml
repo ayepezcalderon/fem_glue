@@ -51,9 +51,8 @@ lint.select = [
   "F", # pyflakes rules
   "I", # isort rules
   "N", # pep8-naming rules
-  # "D", # pydocstyle rules, too  many errors due to test functions
+  "D", # pydocstyle rules
   "UP", # pyupgrade rules
-  # "C90", # mccabe rules (complexity), do we want?
   "B" # flake8-bugbear rules
 ]
 lint.ignore = [
@@ -67,9 +66,6 @@ known-first-party = ["fem_glue"]
 [tool.ruff.format]
 indent-style = "space"
 quote-style = "double"
-
-# [tool.ruff.lint.pep8-naming]
-# extend-ignore-names = ["test_*", "Test*"] # Skip naming conventions for test functions and classes
 
 [tool.numpydoc_validation]
 checks = [

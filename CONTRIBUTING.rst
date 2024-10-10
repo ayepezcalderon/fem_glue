@@ -2,8 +2,6 @@
 Contributing
 ============
 
-Welcome to ``fem_glue``!
-
 Feel free to make any sort of contribution or suggestion!
 
 Please write unit tests for any functionality you add.

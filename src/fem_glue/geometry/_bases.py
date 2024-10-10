@@ -1,5 +1,5 @@
 """
-Defines private abstract base classes from which classes of the public API are derived.
+Define private abstract base classes from which classes of the public API are derived.
 """
 
 import functools
