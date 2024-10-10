@@ -41,8 +41,6 @@ To install it as a developer run the following command instead:
 pip install -e .[testing,dev]
 ```
 
-.. include:: CONTRIBUTING.rst
-
 
 ## Contributing
 
