@@ -1,6 +1,7 @@
 import unittest
-from fem_glue.geometry import Point
+
 from fem_glue._config import CONFIG
+from fem_glue.geometry import Point
 
 
 class TestPoint(unittest.TestCase):

@@ -1,8 +1,8 @@
 import re
 import unittest
 
-from fem_glue.geometry import Point, Line, Polyline
 from fem_glue._config import CONFIG
+from fem_glue.geometry import Line, Point, Polyline
 
 
 class TestDefaultClosedNonIntersecting(unittest.TestCase):
@@ -182,8 +182,8 @@ class TestInitErrors(unittest.TestCase):
         with self.assertRaisesRegex(
             ValueError,
             re.escape(
-                "The polyline is self intersecting. "
-                "If this should not raise an error, set 'strict_non_intersecting' to False."
+                "The polyline is self intersecting. If this should not raise an error, "
+                "set 'strict_non_intersecting' to False."
             ),
         ):
             Polyline(points, strict_non_intersecting=True)

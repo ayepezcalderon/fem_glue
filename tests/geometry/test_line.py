@@ -3,9 +3,9 @@ import unittest
 
 import numpy as np
 
-from fem_glue.geometry import Point, Line
 from fem_glue._config import CONFIG
-from fem_glue.geometry._exceptions import PointOnShapeError, PointNotOnShapeError
+from fem_glue.geometry import Line, Point
+from fem_glue.geometry._exceptions import PointNotOnShapeError, PointOnShapeError
 
 
 class TestLine(unittest.TestCase):
