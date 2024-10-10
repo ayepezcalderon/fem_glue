@@ -1,6 +1,4 @@
-========
-fem_glue
-========
+# fem_glue
 
 Welcome! fem_glue is (or will be, it is currently in an early stage of development) a package for setting up finite element method (FEM) problems through a simple API. 
 
@@ -10,8 +8,9 @@ Packages like fenicsx are great for setting up research and academic problems, b
 Furthermore, a relatively deep understanding of FEM is generally necessary for using something like fenicsx.
 Therefore, the purpose of fem_glue is to simplify the process of setting up FEM problems so that it can be used in day-to-day FEM workflows by regular engineers and FEM enthusiasts.
 
-Note
-====
+
+## Note
+
 This package is still at an early stage of development, so its end-goal functionality still has to be achieved.
 
 Currently, the _geometry_ package of fem_glue is being developed. 
@@ -27,18 +26,25 @@ Once the _geometry_ and meshing packages are complete, the actual _fem_glue_ wil
 This package will use the other two packages for defining geometries and meshes.
 It will define finite element shapes and boundary conditions that can then be delegated to well-established solvers like _fenicsx_.
 
-Installation
-====
+
+## Installation
+
 To install the package as a user run the following command at the top-level of the repository:
 
-```
+```shell
 pip install .
 ```
 
 To install it as a developer run the following command instead:
 
-```
+```shell
 pip install -e .[testing,dev]
 ```
 
 .. include:: CONTRIBUTING.rst
+
+
+## Contributing
+
+Contributions are very welcome!
+Check out how to contribute [here](CONTRIBUTING.md).

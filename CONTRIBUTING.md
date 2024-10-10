@@ -1,6 +1,4 @@
-============
-Contributing
-============
+## How to contribute
 
 Feel free to make any sort of contribution or suggestion!
 
