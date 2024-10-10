@@ -2,7 +2,78 @@
 requires = ["setuptools>=46.1.0", "setuptools_scm[toml]>=5"]
 build-backend = "setuptools.build_meta"
 
+[project]
+name = "fem_glue"
+description = "An open-source finite element method package with a user-friendly API"
+authors = [{name = "Andres Yepez Calderon", email = "andresyepez966@gmail.com"}]
+license = {file = "LICENSE.txt"}
+readme = "README.rst"
+requires-python = ">=3.12"
+
+dependencies = [
+  "numpy",
+  "pydantic",
+]
+
+[project.optional-dependencies]
+testing = [
+  "pytest",
+]
+dev = [
+  "ruff",
+  "basedpyright",
+]
+
 [tool.setuptools_scm]
 # For smarter version schemes and other configuration options,
 # check out https://github.com/pypa/setuptools_scm
 version_scheme = "no-guess-dev"
+
+[tool.setuptools]
+zip-safe = false
+include-package-data = true
+packages = {find = {where = ["src"], exclude = ["tests"]}}
+package-dir = {'' = "src"}
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+filterwarnings = [
+  "error",
+]
+
+[tool.ruff]
+line-length = 88
+target-version = "py312"
+lint.select = [
+  "E", # pycodestyle error rules
+  "W", # pycodestyle warning rules
+  "F", # pyflakes rules
+  "I", # isort rules
+  "N", # pep8-naming rules
+  # "D", # pydocstyle rules, too  many errors due to test functions
+  "UP", # pyupgrade rules
+  # "C90", # mccabe rules (complexity), do we want?
+  "B" # flake8-bugbear rules
+]
+lint.ignore = [
+  "B019", # Do not raise error on functools.cache/lru_cache
+  "N806", # Do not complain on non-lowercase variables, since it can be useful for math. But only use non-lower case for math!
+]
+
+[tool.ruff.lint.isort]
+known-first-party = ["fem_glue"]
+
+[tool.ruff.format]
+indent-style = "space"
+quote-style = "double"
+
+# [tool.ruff.lint.pep8-naming]
+# extend-ignore-names = ["test_*", "Test*"] # Skip naming conventions for test functions and classes
+
+[tool.numpydoc_validation]
+checks = [
+  "all",
+]
+exclude = [
+  '\._*',  # Exclude all private functions and dunder methods
+]
