@@ -3,27 +3,26 @@ Defines the behavior of the Polyline class, which defines straight lines in 3D s
 """
 
 import functools
-
-from typing import override, overload
 from collections.abc import Sequence
+from typing import overload, override
 
-from fem_glue.geometry._bases import SequentialGeometry
+from fem_glue._config import CONFIG
 from fem_glue.geometry import Point
+from fem_glue.geometry._bases import SequentialGeometry
 from fem_glue.geometry.dim1 import Line
 from fem_glue.geometry.utils import lines_from_points
-from fem_glue._config import CONFIG
 
 
 class Polyline(SequentialGeometry[Line]):
     """
     A polyline defined by n-straight lines connected together in 3D space.
-    
+
     The only hard constraint of a polyline is that lines must be connected to each
     other. That is, the end point of line n must have the same coordinates as the
     start point of line n+1.
-    
-    The following optional constraints can also be enforced: 
-        - closed: The end point of the last line must have the same coordinates 
+
+    The following optional constraints can also be enforced:
+        - closed: The end point of the last line must have the same coordinates
         as the start point of the first line.
         - non-intersecting: The lines of the polyline cannot intersect each other
         anywhere.
@@ -97,11 +96,13 @@ class Polyline(SequentialGeometry[Line]):
         super().__init__(lines)
 
         # Raise error if intersecting but non-intersecting must be enforced
-        # Do this after super init so that elements are set for is_non_intersecting caching
+        # Do this after super init so that elements are set for
+        # is_non_intersecting caching
         if strict_non_intersecting and not self.is_non_intersecting():
             raise ValueError(
                 "The polyline is self intersecting. "
-                "If this should not raise an error, set 'strict_non_intersecting' to False."
+                "If this should not raise an error, "
+                "set 'strict_non_intersecting' to False."
             )
 
     def get_self_intersections(self) -> tuple[list[Point], list[Line]]:

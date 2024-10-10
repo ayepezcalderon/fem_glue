@@ -1,13 +1,13 @@
-import math
 import functools
+import math
+from collections.abc import Sequence
+from typing import overload
+
 import numpy as np
 
-from typing import overload
-from collections.abc import Sequence
-
-from fem_glue.geometry.dim1.polyline import Polyline, Point, Line
-from fem_glue.geometry._bases import SequentialGeometry
 from fem_glue._config import CONFIG
+from fem_glue.geometry._bases import SequentialGeometry
+from fem_glue.geometry.dim1.polyline import Line, Point, Polyline
 
 
 class Polygon(SequentialGeometry[Line]):
@@ -131,6 +131,8 @@ class Polygon(SequentialGeometry[Line]):
             if point in edge:
                 return True
 
+        return False
+
     def point_inside_polygon(self, point: Point) -> bool:
         """
         Check if the point is inside the polygon (ie. inside its boundary).
@@ -160,7 +162,7 @@ class Polygon(SequentialGeometry[Line]):
         ray = Line([point, Point([point[0] + 1, point[1], point[2]])])
         intersections = 0
         for edge in self.boundary:
-            if ray.intersects(edge):
+            if ray.intersect(edge):
                 intersections += 1
 
         return intersections % 2 == 1
@@ -205,8 +207,8 @@ class Polygon(SequentialGeometry[Line]):
                 for line in self[1:]
                 if not line.is_parallel(first_computation_line)
             )
-        except StopIteration:
-            raise ValueError("All lines in the polygon's boundary are parallel.")
+        except StopIteration as e:
+            raise ValueError("All lines in the polygon's boundary are parallel.") from e
 
         # Find unit vector tangent to plane and parallel to first computation line
         unit_tangent_1 = first_computation_line.dir_unit_vector()

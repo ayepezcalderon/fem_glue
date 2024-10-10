@@ -1,5 +1,6 @@
 import json
 from typing import Self
+
 from pydantic import BaseModel, Field
 
 _CONFIG_FILE_NAME = "femglue.json"
@@ -7,7 +8,7 @@ _CONFIG_FILE_NAME = "femglue.json"
 
 class _Configuration(BaseModel):
     """
-    Singleton containing default configuration parameters. 
+    Singleton containing default configuration parameters.
     For example, the floating point precision of mathematical operations.
 
     If femglue.json is defined in the current working directory,
@@ -20,10 +21,11 @@ class _Configuration(BaseModel):
         The number of decimal places for floats in the package.
         By default 6.
     tol : float
-        The inverse of precision. 
+        The inverse of precision.
         Quantities smaller than this one are considered to be approximately zero.
         By default 1e-6
     """
+
     precision: int = Field(default=6)
 
     def __new__(cls, *args, **kwargs) -> Self:

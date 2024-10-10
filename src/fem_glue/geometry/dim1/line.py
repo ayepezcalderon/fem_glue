@@ -4,16 +4,16 @@ Defines the behavior of the Line class, which defines straight lines in 3D space
 
 import functools
 import math
+from collections.abc import Sequence
+from typing import Literal, Self, override
+
 import numpy as np
 
-from typing import override, Self, Literal
-from collections.abc import Sequence
-
-from fem_glue.geometry._bases import SequentialGeometry
-from fem_glue.geometry import Point
 from fem_glue._config import CONFIG
 from fem_glue._utils import tol_compare
-from fem_glue.geometry._exceptions import PointOnShapeError, PointNotOnShapeError
+from fem_glue.geometry import Point
+from fem_glue.geometry._bases import SequentialGeometry
+from fem_glue.geometry._exceptions import PointNotOnShapeError, PointOnShapeError
 
 
 class Line(SequentialGeometry[Point]):
@@ -108,7 +108,8 @@ class Line(SequentialGeometry[Point]):
         point_is_not_on_ray: Literal["null", "raise"] = "null",
     ) -> float | None:
         """
-        Calculate the position of the point on the coordinate system of the ray of the line.
+        Calculate the position of the point on the coordinate system of the ray of the
+        line.
         This 1D coordinate system is defined on the direction of the line and has the
         origin on the start point of the line.
         The coordinate system is also normalized such that its unit length is
@@ -363,7 +364,8 @@ class Line(SequentialGeometry[Point]):
                 - where the direction vectors are:
                     d1 = P2 - P1
                     d2 = Q2 - Q1
-                - and where the lines' spans coincide with the scalar parameters such that:
+                - and where the lines' spans coincide with the scalar parameters such
+                  that:
                     L1 span -> t in interval [0, 1]
                     L2 span -> s in interval [0, 1]
 
@@ -406,7 +408,7 @@ class Line(SequentialGeometry[Point]):
             segment (ie. infinitely many points).
         """
         # Convert points to numpy arrays
-        P1, P2, Q1, Q2 = [np.array(p) for p in [*self, *other]]
+        P1, P2, Q1, Q2 = (np.array(p) for p in [*self, *other])
 
         # Direction vectors
         d1 = P2 - P1

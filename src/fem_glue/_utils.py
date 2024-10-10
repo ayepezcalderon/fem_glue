@@ -1,6 +1,6 @@
 import math
-
 from typing import Literal
+
 from fem_glue._config import CONFIG
 
 type _OP_STR = Literal["lt", "le", "eq", "ne", "ge", "gt"]

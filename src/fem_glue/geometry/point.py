@@ -1,12 +1,11 @@
 import math
+from collections.abc import Callable, Sequence
+from typing import Self, override
 
 import numpy as np
 
-from typing import override, Self, Callable
-from collections.abc import Sequence
-
-from fem_glue.geometry._bases import SequentialGeometry
 from fem_glue._config import CONFIG
+from fem_glue.geometry._bases import SequentialGeometry
 
 
 class Point(SequentialGeometry[float]):
@@ -102,7 +101,7 @@ class Point(SequentialGeometry[float]):
             # Cast to sequence of expected length
             other = [other, other, other]
 
-        return self.__class__([op(i, j) for i, j in zip(self, other)])
+        return self.__class__([op(i, j) for i, j in zip(self, other, strict=True)])
 
     @override
     def __contains__(self, value: float) -> bool:
