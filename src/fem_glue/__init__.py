@@ -1,3 +1,5 @@
+"""A user-friendly finite element method (FEM) package."""
+
 from importlib.metadata import PackageNotFoundError, version  # pragma: no cover
 
 try:
