@@ -30,13 +30,13 @@ It will define finite element shapes and boundary conditions that can then be de
 Installation
 ====
 To install the package as a user run the following command at the top-level of the repository:
-```
+``
 pip install .
-```
+``
 
 To install it as a developer run the following command instead:
-```
+``
 pip install -e .[testing,dev]
-```
+``
 
- .. include:: CONTRIBUTING.rst
+.. include:: CONTRIBUTING.rst
