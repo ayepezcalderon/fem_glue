@@ -60,6 +60,9 @@ lint.ignore = [
   "N806", # Do not complain on non-lowercase variables, since it can be useful for math. But only use non-lower case for math!
 ]
 
+[tool.ruff.lint.pydocstyle]
+convention = "google"
+
 [tool.ruff.lint.isort]
 known-first-party = ["fem_glue"]
 
