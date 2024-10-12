@@ -143,7 +143,7 @@ class Polyline(SequentialGeometry[Line]):
         The points at which the lines meet (ie. mutual endpoints) DO NOT count as
         intersections.
 
-        Returns:
+        Returns
         -------
         tuple[list[Point], list[Line]]
             The first value is a list containing the points (excluding meeting points)
@@ -170,9 +170,9 @@ class Polyline(SequentialGeometry[Line]):
         return sorted(points), sorted(lines)
 
     def is_closed(self) -> bool:
-        """Determines if the polyline is closed.
+        """Determine if the polyline is closed.
 
-        Returns:
+        Returns
         -------
         bool
             Whether the polyline is closed.
@@ -182,9 +182,9 @@ class Polyline(SequentialGeometry[Line]):
 
     @functools.cache
     def is_non_intersecting(self) -> bool:
-        """Determines if the polyline is self-intersecting.
+        """Determine if the polyline is self-intersecting.
 
-        Returns:
+        Returns
         -------
         bool
             Whether the polyline is self-intersecting.
@@ -198,7 +198,7 @@ class Polyline(SequentialGeometry[Line]):
 
         The points are ordered in the same manner as the lines.
 
-        Returns:
+        Returns
         -------
         list[Point]
             List of points of the lines in the polyline.

@@ -74,7 +74,7 @@ class Line(SequentialGeometry[Point]):
             If "raise", an error is raised.
             Default is "self".
 
-        Returns:
+        Returns
         -------
         Point
             The projection of the given point onto the ray of the line.
@@ -129,7 +129,7 @@ class Line(SequentialGeometry[Point]):
             If "raise", an error is raised.
             Default is "null".
 
-        Returns:
+        Returns
         -------
         float | None
             The position of the point on the coordinate system.
@@ -175,7 +175,7 @@ class Line(SequentialGeometry[Point]):
             If "raise", an error is raised.
             Default is "null".
 
-        Returns:
+        Returns
         -------
         Point | None
             The projection of the given point onto the line.
@@ -230,7 +230,7 @@ class Line(SequentialGeometry[Point]):
             If "raise", an error is raised.
             Default is "null".
 
-        Returns:
+        Returns
         -------
         Self | None
             The shortest line between the line and the point.
@@ -267,7 +267,7 @@ class Line(SequentialGeometry[Point]):
         if_on_endpoint : bool
             Specifies the return value if the point is on an endpoint of the line.
 
-        Returns:
+        Returns
         -------
         bool
             True if the point is on the line, False otherwise.
@@ -291,7 +291,7 @@ class Line(SequentialGeometry[Point]):
             parallel.
             Usually a very small number for stabilizing floating point operations.
 
-        Returns:
+        Returns
         -------
         bool
             True if the lines are parallel, False otherwise.
@@ -320,7 +320,7 @@ class Line(SequentialGeometry[Point]):
             collinear.
             Usually a very small number for stabilizing floating point operations.
 
-        Returns:
+        Returns
         -------
         bool
             True if the lines are collinear, False otherwise.
@@ -402,7 +402,7 @@ class Line(SequentialGeometry[Point]):
             Tolerance specifying how close lines have to be together to intersect.
             Usually a very small number for stabilizing floating point operations.
 
-        Returns:
+        Returns
         -------
         "None | Point | Line"
             Intersection between the lines. None if they don't intersect,

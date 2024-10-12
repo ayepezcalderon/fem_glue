@@ -137,7 +137,7 @@ class SequentialGeometry[T](Sequence[T]):
         op : Callable[T, float | Sequence[float]]
             The arithmetic operation to perform.
 
-        Returns:
+        Returns
         -------
         Self
             The result of the arithmetic operation.

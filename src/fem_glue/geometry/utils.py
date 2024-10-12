@@ -24,7 +24,7 @@ def lines_from_points(points: Sequence[Point]) -> list[Line]:
     points : Sequence[Point]
         The input sequence of points.
 
-    Returns:
+    Returns
     -------
     list[Line]
         The output sequence of lines obtained from the input sequence of points.

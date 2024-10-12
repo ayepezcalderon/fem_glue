@@ -60,7 +60,7 @@ class Point(SequentialGeometry[float]):
             The precision to round to.
             Default is the precision set in the configuration.
 
-        Returns:
+        Returns
         -------
         Self
             The point with rounded entries.
@@ -91,7 +91,7 @@ class Point(SequentialGeometry[float]):
         op : Callable
             The arithmetic operation to perform.
 
-        Returns:
+        Returns
         -------
         Self
             The result of the arithmetic operation.
