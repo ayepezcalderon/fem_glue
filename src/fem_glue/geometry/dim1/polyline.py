@@ -1,5 +1,4 @@
-"""Defines the behavior of the Polyline class, which defines straight lines in 3D space
-"""
+"""Defines the behavior of the Polyline class, which defines straight lines in 3D space."""
 
 import functools
 from collections.abc import Sequence
@@ -167,6 +166,5 @@ class Polyline(SequentialGeometry[Line]):
         return len(self._elements)
 
     def perimeter(self) -> float:
-        """Calculate the perimeter of the polyline.
-        """
+        """Calculate the perimeter of the polyline."""
         return round(sum(ln.length() for ln in self), CONFIG.precision)

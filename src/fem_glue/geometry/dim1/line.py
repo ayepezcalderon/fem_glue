@@ -1,5 +1,4 @@
-"""Defines the behavior of the Line class, which defines straight lines in 3D space
-"""
+"""Defines the behavior of the Line class, which defines straight lines in 3D space."""
 
 import functools
 import math
@@ -16,8 +15,7 @@ from fem_glue.geometry._exceptions import PointNotOnShapeError, PointOnShapeErro
 
 
 class Line(SequentialGeometry[Point]):
-    """A straight line defined by 2 points in 3D space.
-    """
+    """A straight line defined by 2 points in 3D space."""
 
     def __init__(self, elements: Sequence[Point], /):
         # Check that the points in the line are not the same
@@ -31,23 +29,19 @@ class Line(SequentialGeometry[Point]):
         return 2
 
     def length(self) -> float:
-        """Calculate the length of the line.
-        """
+        """Calculate the length of the line."""
         return round(math.dist(*self), CONFIG.precision)
 
     def normalize(self) -> Self:
-        """Normalize the line such that its ends define a unit line.
-        """
+        """Normalize the line such that its ends define a unit line."""
         return self / self.length()
 
     def as_vector(self) -> np.ndarray:
-        """Return the line as a vector centered at the origin.
-        """
+        """Return the line as a vector centered at the origin."""
         return np.array(self[1] - self[0])
 
     def dir_unit_vector(self) -> np.ndarray:
-        """Calculate the unit direction vector of the line.
-        """
+        """Calculate the unit direction vector of the line."""
         return self.as_vector() / self.length()
 
     def get_point_projection_on_ray(
