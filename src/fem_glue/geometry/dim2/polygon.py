@@ -15,7 +15,7 @@ class Polygon(SequentialGeometry[Line]):
     The boundary must be a closed and non-self-intersecting polyline.
     Each line in the boundary must lie in the same 2D plane in 3D space.
 
-    Attributes
+    Attributes:
     ----------
     boundary : Polyline
         The boundary of the polygon.
@@ -78,7 +78,7 @@ class Polygon(SequentialGeometry[Line]):
         """Get the coefficients of the plane equation a, b, c, d.
         The equation is defined as a*x + b*y + c*z + d = 0.
 
-        Returns
+        Returns:
         -------
         tuple[float, float, float, float]
             The coefficients of the plane equation.
@@ -96,7 +96,7 @@ class Polygon(SequentialGeometry[Line]):
         point : Point
             The point to check.
 
-        Returns
+        Returns:
         -------
         bool
             True if the point is in the same plane as the polygon, False otherwise.
@@ -116,7 +116,7 @@ class Polygon(SequentialGeometry[Line]):
         point : Point
             The point to check.
 
-        Returns
+        Returns:
         -------
         bool
             True if the point is on the boundary of the polygon, False otherwise.
@@ -142,7 +142,7 @@ class Polygon(SequentialGeometry[Line]):
         point : Point
             The point to check.
 
-        Returns
+        Returns:
         -------
         bool
             True if the point is inside the polygon, False otherwise.
@@ -175,7 +175,7 @@ class Polygon(SequentialGeometry[Line]):
         line : Line
             The line to check against.
 
-        Returns
+        Returns:
         -------
         bool
             True if the polygon is tangent to the line, False otherwise.
@@ -193,7 +193,7 @@ class Polygon(SequentialGeometry[Line]):
 
         The second return value are the lines used to compute the basis.
 
-        Returns
+        Returns:
         -------
         tuple[np.ndarray, tuple[Line, Line]]
             The orthogonal basis and the lines used to compute it.

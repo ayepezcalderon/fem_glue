@@ -20,7 +20,7 @@ def tol_compare(a: float, b: float, op: _OP_STR, tol: float = CONFIG.tol) -> boo
     tol : float
         The tolerance to take into account.
 
-    Returns
+    Returns:
     -------
     bool
         The result of the comparison.

@@ -109,7 +109,7 @@ class Polyline(SequentialGeometry[Line]):
         intersections.
 
 
-        Returns
+        Returns:
         -------
         tuple[list[Point], list[Line]]
             The first value is a list containing the points (excluding meeting points)
@@ -138,7 +138,7 @@ class Polyline(SequentialGeometry[Line]):
     def is_closed(self) -> bool:
         """Determines if the polyline is closed.
 
-        Returns
+        Returns:
         -------
         bool
             Whether the polyline is closed.
@@ -150,7 +150,7 @@ class Polyline(SequentialGeometry[Line]):
     def is_non_intersecting(self) -> bool:
         """Determines if the polyline is self-intersecting.
 
-        Returns
+        Returns:
         -------
         bool
             Whether the polyline is self-intersecting.

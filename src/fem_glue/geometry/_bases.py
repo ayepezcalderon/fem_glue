@@ -1,4 +1,6 @@
-"""Define private abstract base classes from which classes of the public API are derived.
+"""Defines private abstract base classes for geometries.
+
+Classes of the public API are derived.
 """
 
 import functools
@@ -9,14 +11,13 @@ from typing import Self, overload, override
 
 
 class SequentialGeometry[T](Sequence[T]):
-    """Abstract base class for geometries that can be defined by a sequence of similar
-    quantities.
+    """Abstract base class for sequential geometries.
 
-    For example, a Line can be defined by a Sequence of 2 Points, and a Point can be
-    defined as a sequence of 3 floats.
-
-    As a counter-example, a circle cannot be defined by this way, since its
-    position in space (a Point) and its radius (a float) are not similar quantities.
+    Sequential geometries are those that can be defined by a sequence of similar
+    quantities. For example, a Line can be defined by a Sequence of 2 Points, and a
+    Point can be defined as a sequence of 3 floats. As a counter-example, a circle
+    cannot be defined by this way, since its position in space (a Point) and its radius
+    (a float) are not similar quantities.
     """
 
     def __init__(self, elements: Sequence[T], /):
@@ -28,17 +29,14 @@ class SequentialGeometry[T](Sequence[T]):
             )
 
     @overload
-    def __getitem__(self, index: int) -> T:
-        """Get the element at the given index.
-        """
+    def __getitem__(self, index: int) -> T: ...
 
     @overload
-    def __getitem__(self, index: slice) -> list[T]:
-        """Get the elements for the given range in a list.
-        """
+    def __getitem__(self, index: slice) -> list[T]: ...
 
     @override
     def __getitem__(self, index: int | slice) -> T | list[T]:
+        """Get the elements for the given index or the given slice."""
         if isinstance(index, int):
             return self._elements[index]
         return list(self._elements[index])
@@ -57,19 +55,16 @@ class SequentialGeometry[T](Sequence[T]):
 
     @override
     def index(self, value: T, start: int = 0, stop: int = 9223372036854775807) -> int:
-        """Get the index of the given element.
-        """
+        """Get the index of the given element."""
         return self._elements.index(value, start, stop)
 
     @override
     def count(self, value: float) -> int:
-        """Count the occurrences of the given element.
-        """
+        """Count the occurrences of the given element."""
         return self._elements.count(value)
 
     def reversed(self) -> Self:
-        """Return a reversed version of the geometry.
-        """
+        """Return a reversed version of the geometry."""
         return self.__class__(tuple(reversed(self)))
 
     @override
@@ -78,8 +73,7 @@ class SequentialGeometry[T](Sequence[T]):
 
     @override
     def __eq__(self, other: Self) -> bool:
-        """Check if two geometries of the same type are equal.
-        """
+        """Check if two geometries of the same type are equal."""
         if not isinstance(other, self.__class__):
             return NotImplemented
 
@@ -125,8 +119,10 @@ class SequentialGeometry[T](Sequence[T]):
         other: float | Sequence[float],
         op: Callable[[T, float | Sequence[float]], Self],
     ) -> Self:
-        """Special function that defines how the mathematical operator "op"
-        (eg. op == operator.__add__), which relates to a dunder (eg. __add__) behaves.
+        """Define how arithmetic operation dunders should behave (eg. __add__).
+
+        Special function that defines how the mathematical operator "op"
+        (eg. op == operator.add) relates to a dunder (eg. __add__) behaves.
 
         The default generic operation defined here performs "op" between "other" and
         each element of self.
@@ -141,7 +137,7 @@ class SequentialGeometry[T](Sequence[T]):
         op : Callable[T, float | Sequence[float]]
             The arithmetic operation to perform.
 
-        Returns
+        Returns:
         -------
         Self
             The result of the arithmetic operation.

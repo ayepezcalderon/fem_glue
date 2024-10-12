@@ -15,7 +15,7 @@ class _Configuration(BaseModel):
     this configuration defines the values of this configuration singleton.
     Otherwise, the default values of the singleton are used.
 
-    Attributes
+    Attributes:
     ----------
     precision : int
         The number of decimal places for floats in the package.
@@ -34,7 +34,7 @@ class _Configuration(BaseModel):
 
         Use the static configuration file to create the singleton.
 
-        Returns
+        Returns:
         -------
         Self
             Singleton configuration.
