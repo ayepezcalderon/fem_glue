@@ -1,3 +1,8 @@
+"""Defines the behavior of the Point class.
+
+The Point defines points in 3D space.
+"""
+
 import math
 from collections.abc import Callable, Sequence
 from typing import Self, override
@@ -14,6 +19,15 @@ class Point(SequentialGeometry[float]):
     __hash__ = SequentialGeometry.__hash__
 
     def __init__(self, elements: Sequence[float], /):
+        """Define a point in 3D space.
+
+        Parameters
+        ----------
+        elements : Sequence[float]
+            Sequence of 3 numbers, each of which is associated to a dimension in
+            3D space.
+
+        """
         elements = [float(round(i, CONFIG.precision)) for i in elements]
         super().__init__(elements)
 
@@ -30,7 +44,7 @@ class Point(SequentialGeometry[float]):
         return round(math.hypot(*self), CONFIG.precision)
 
     def normalize(self) -> np.ndarray:
-        """Normalize the point such that the origin and the point define a unit vector."""
+        """Normalize the point so that the origin and the point define a unit vector."""
         return np.array(self / self.norm())
 
     def as_array(self) -> np.ndarray:
@@ -60,8 +74,10 @@ class Point(SequentialGeometry[float]):
         other: float | Sequence[float],
         op: Callable[[float, float], float],
     ) -> Self:
-        """Special function that defines how the mathematical operator "op"
-        (eg. op == operator.__add__), which relates to a dunder (eg. __add__) behaves.
+        """Define how arithmetic operation dunders should behave (eg. __add__).
+
+        Special function that defines how the mathematical operator "op"
+        (eg. op == operator.add) relates to a dunder (eg. __add__) behaves.
 
         For the Point, the arithmetic operation is performed on each coordinate.
         When "other" is a float, the same float acts on all coordinates.

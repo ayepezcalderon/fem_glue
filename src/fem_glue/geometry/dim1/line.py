@@ -1,4 +1,7 @@
-"""Defines the behavior of the Line class, which defines straight lines in 3D space."""
+"""Defines the behavior of the Line class.
+
+The Line defines straight lines in 3D space.
+"""
 
 import functools
 import math
@@ -18,6 +21,16 @@ class Line(SequentialGeometry[Point]):
     """A straight line defined by 2 points in 3D space."""
 
     def __init__(self, elements: Sequence[Point], /):
+        """Define a straight line in 3D space.
+
+        Parameters
+        ----------
+        elements : Sequence[Point]
+            Sequence of 2 Points, each of which is associated to an endpoint of the
+            line. The first Point is the start endpoint and the second Point is the
+            end endpoint. This convention defines the direction of the line.
+
+        """
         # Check that the points in the line are not the same
         if elements[0] == elements[1]:
             raise ValueError("A line cannot be constructed from two identical points.")
@@ -95,8 +108,8 @@ class Line(SequentialGeometry[Point]):
         normalized: bool = True,
         point_is_not_on_ray: Literal["null", "raise"] = "null",
     ) -> float | None:
-        """Calculate the position of the point on the coordinate system of the ray of the
-        line.
+        """Calculate the position of the point on the line's ray coordinate system.
+
         This 1D coordinate system is defined on the direction of the line and has the
         origin on the start point of the line.
         The coordinate system is also normalized such that its unit length is
@@ -204,6 +217,7 @@ class Line(SequentialGeometry[Point]):
         point_is_on_line: Literal["null", "raise"] = "null",
     ) -> Self | None:
         """Calculate the shortest line between the line and the given point.
+
         Start point is point on line, end point is given point.
 
         Parameters
@@ -340,9 +354,10 @@ class Line(SequentialGeometry[Point]):
         return_mutual_endpoints: bool = True,
         tol: float = CONFIG.tol,
     ) -> "None | Point | Line":
-        """Calculate the intersection between two lines. Return None if the lines do not
-        intersect, a point if they intersect at a single point, and a line if
-        they intersect at a segment.
+        """Calculate the intersection between two lines.
+
+        Return None if the lines do not intersect, a Point if they intersect at a
+        single point, and a Line if they intersect at a segment.
 
         Calculation approach:
             - Parametrize each the lines as:

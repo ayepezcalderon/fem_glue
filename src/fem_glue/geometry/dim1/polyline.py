@@ -1,4 +1,7 @@
-"""Defines the behavior of the Polyline class, which defines straight lines in 3D space."""
+"""Defines the behavior of the Polyline class.
+
+The Polyline defines a sequence of n-connected straight lines in 3D space.
+"""
 
 import functools
 from collections.abc import Sequence
@@ -51,6 +54,38 @@ class Polyline(SequentialGeometry[Line]):
         close: bool = False,
         strict_non_intersecting: bool = False,
     ):
+        """Define a polyline in 3D space.
+
+        The Polyline defines a sequence of n-connected Lines in 3D space.
+
+        Parameters
+        ----------
+        elements : Sequence[Line] | Sequence[Point]
+            Sequence of lines or sequence of points.
+            If a sequence of lines, the lines have to be connected to each other.
+            This means that the end point of line n must have the same coordinates as
+            the start point of line n+1.
+            If a sequence of points, the points define the lines in the polyline.
+            That is, point n defines the end point of line n-1 and the start point
+            of line n. The exception to this rule is when the point is the first or
+            last point of the sequence. For the first point the start point only
+            defines the the start point of the first line, and for the last point the
+            end point only defines the end point of the last line. These first/last
+            special cases have exceptions when `close=True`.
+        close : bool
+            If True, closes the polyline.
+            If a sequence of lines was passed and the last line is not connected to the
+            first, a new last line is instroduced connecting the former last line and
+            the first line.
+            If a sequence of points was passed and the first and last points are not
+            equal, a new last line is instroduced connecting these points.
+            Default is False.
+        strict_non_intersecting : bool
+            If True, the lines of the polyline cannot intersect each other anywhere.
+            If True and the lines intersect, an error is raised.
+            Default is False.
+
+        """
         # Get list of lines from input
         if all(isinstance(e, Point) for e in elements):
             if len(elements) < 3:
@@ -104,9 +139,9 @@ class Polyline(SequentialGeometry[Line]):
 
     def get_self_intersections(self) -> tuple[list[Point], list[Line]]:
         """Return the intersections between the lines in the polyline.
+
         The points at which the lines meet (ie. mutual endpoints) DO NOT count as
         intersections.
-
 
         Returns:
         -------
@@ -159,6 +194,16 @@ class Polyline(SequentialGeometry[Line]):
 
     @property
     def points(self) -> list[Point]:
+        """Get a list of points containing the points of the lines in the polyline.
+
+        The points are ordered in the same manner as the lines.
+
+        Returns:
+        -------
+        list[Point]
+            List of points of the lines in the polyline.
+
+        """
         return self._points
 
     @override
