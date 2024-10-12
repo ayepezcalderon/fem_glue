@@ -11,8 +11,7 @@ from fem_glue.geometry.dim1.polyline import Line, Point, Polyline
 
 
 class Polygon(SequentialGeometry[Line]):
-    """
-    A planar polygon in 3D space.
+    """A planar polygon in 3D space.
     The boundary must be a closed and non-self-intersecting polyline.
     Each line in the boundary must lie in the same 2D plane in 3D space.
 
@@ -29,6 +28,7 @@ class Polygon(SequentialGeometry[Line]):
         3x3 array. The first two sub-arrays correspond to "tangents", and the
         third corresponds to "normal". The 3 together define the orthogonal basis
         for the local coordinate system of the plane of the polygon.
+
     """
 
     @overload
@@ -75,22 +75,21 @@ class Polygon(SequentialGeometry[Line]):
 
     @functools.cache
     def get_plane_coefficients(self) -> tuple[float, float, float, float]:
-        """
-        Get the coefficients of the plane equation a, b, c, d.
+        """Get the coefficients of the plane equation a, b, c, d.
         The equation is defined as a*x + b*y + c*z + d = 0.
 
         Returns
         -------
         tuple[float, float, float, float]
             The coefficients of the plane equation.
+
         """
         a, b, c = self.normal
         d = -np.dot(self.normal, np.array(Point(self.boundary.points[0])))
         return a, b, c, d
 
     def point_on_polygon_plane(self, point: Point) -> bool:
-        """
-        Check if the point is in the same plane as the polygon.
+        """Check if the point is in the same plane as the polygon.
 
         Parameters
         ----------
@@ -101,6 +100,7 @@ class Polygon(SequentialGeometry[Line]):
         -------
         bool
             True if the point is in the same plane as the polygon, False otherwise.
+
         """
         # If the line formed by the given point and a vertex of the polygon is parallel
         # to the polygon, then the given point is on the same plane as the polygon
@@ -109,8 +109,7 @@ class Polygon(SequentialGeometry[Line]):
         return point == vertex or self.line_is_tangent(Line([point, vertex]))
 
     def point_on_polygon_boundary(self, point: Point) -> bool:
-        """
-        Check if the point is on the boundary of the polygon.
+        """Check if the point is on the boundary of the polygon.
 
         Parameters
         ----------
@@ -121,6 +120,7 @@ class Polygon(SequentialGeometry[Line]):
         -------
         bool
             True if the point is on the boundary of the polygon, False otherwise.
+
         """
         # If the point is not on the plane of the polygon, it is not on the boundary
         if not self.point_on_polygon_plane(point):
@@ -134,8 +134,7 @@ class Polygon(SequentialGeometry[Line]):
         return False
 
     def point_inside_polygon(self, point: Point) -> bool:
-        """
-        Check if the point is inside the polygon (ie. inside its boundary).
+        """Check if the point is inside the polygon (ie. inside its boundary).
         NOTE: If the point is on the boundary of the polygon, it is not inside of it.
 
         Parameters
@@ -147,6 +146,7 @@ class Polygon(SequentialGeometry[Line]):
         -------
         bool
             True if the point is inside the polygon, False otherwise.
+
         """
         # If the point is not on the plane of the polygon, it is not inside the polygon
         if not self.point_on_polygon_plane(point):
@@ -168,8 +168,7 @@ class Polygon(SequentialGeometry[Line]):
         return intersections % 2 == 1
 
     def line_is_tangent(self, line: Line) -> bool:
-        """
-        Check if the polygon is tangent to the given line.
+        """Check if the polygon is tangent to the given line.
 
         Parameters
         ----------
@@ -180,12 +179,12 @@ class Polygon(SequentialGeometry[Line]):
         -------
         bool
             True if the polygon is tangent to the line, False otherwise.
+
         """
         return math.isclose(np.dot(self.normal, line.as_vector()), CONFIG.tol)
 
     def _find_orthogonal_basis(self) -> tuple[np.ndarray, tuple[Line, Line]]:
-        """
-        Find an orthogonal unit basis for the plane of the polygon and the Lines
+        """Find an orthogonal unit basis for the plane of the polygon and the Lines
         used to compute this basis.
 
         The first return value is the basis matrix.
@@ -198,6 +197,7 @@ class Polygon(SequentialGeometry[Line]):
         -------
         tuple[np.ndarray, tuple[Line, Line]]
             The orthogonal basis and the lines used to compute it.
+
         """
         # Find the first two non-parallel lines in the polygon's boundary
         first_computation_line = self[0]

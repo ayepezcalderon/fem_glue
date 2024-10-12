@@ -1,5 +1,4 @@
-"""
-Defines the behavior of the Line class, which defines straight lines in 3D space
+"""Defines the behavior of the Line class, which defines straight lines in 3D space
 """
 
 import functools
@@ -17,8 +16,7 @@ from fem_glue.geometry._exceptions import PointNotOnShapeError, PointOnShapeErro
 
 
 class Line(SequentialGeometry[Point]):
-    """
-    A straight line defined by 2 points in 3D space.
+    """A straight line defined by 2 points in 3D space.
     """
 
     def __init__(self, elements: Sequence[Point], /):
@@ -33,26 +31,22 @@ class Line(SequentialGeometry[Point]):
         return 2
 
     def length(self) -> float:
-        """
-        Calculate the length of the line.
+        """Calculate the length of the line.
         """
         return round(math.dist(*self), CONFIG.precision)
 
     def normalize(self) -> Self:
-        """
-        Normalize the line such that its ends define a unit line.
+        """Normalize the line such that its ends define a unit line.
         """
         return self / self.length()
 
     def as_vector(self) -> np.ndarray:
-        """
-        Return the line as a vector centered at the origin.
+        """Return the line as a vector centered at the origin.
         """
         return np.array(self[1] - self[0])
 
     def dir_unit_vector(self) -> np.ndarray:
-        """
-        Calculate the unit direction vector of the line.
+        """Calculate the unit direction vector of the line.
         """
         return self.as_vector() / self.length()
 
@@ -61,8 +55,7 @@ class Line(SequentialGeometry[Point]):
         point: Point,
         point_is_on_ray: Literal["self", "raise"] = "self",
     ) -> Point:
-        """
-        Calculate the projection of the given point onto the ray of the line.
+        """Calculate the projection of the given point onto the ray of the line.
 
         Parameters
         ----------
@@ -78,6 +71,7 @@ class Line(SequentialGeometry[Point]):
         -------
         Point
             The projection of the given point onto the ray of the line.
+
         """
         # Vector between the start point of the line and the given point
         line_to_point_vector = point - self[0]
@@ -107,8 +101,7 @@ class Line(SequentialGeometry[Point]):
         normalized: bool = True,
         point_is_not_on_ray: Literal["null", "raise"] = "null",
     ) -> float | None:
-        """
-        Calculate the position of the point on the coordinate system of the ray of the
+        """Calculate the position of the point on the coordinate system of the ray of the
         line.
         This 1D coordinate system is defined on the direction of the line and has the
         origin on the start point of the line.
@@ -133,6 +126,7 @@ class Line(SequentialGeometry[Point]):
         -------
         float | None
             The position of the point on the coordinate system.
+
         """
         # Handle case where the point is not on the ray of the line
         new_line = Line([self[0], point])
@@ -157,8 +151,7 @@ class Line(SequentialGeometry[Point]):
         point_is_on_line: Literal["self", "raise"] = "self",
         projection_is_not_on_line: Literal["null", "raise"] = "null",
     ) -> Point | None:
-        """
-        Calculate the projection of the given point onto the line.
+        """Calculate the projection of the given point onto the line.
 
         Parameters
         ----------
@@ -179,6 +172,7 @@ class Line(SequentialGeometry[Point]):
         -------
         Point | None
             The projection of the given point onto the line.
+
         """
         point_projection_on_ray = self.get_point_projection_on_ray(
             point, point_is_on_ray="self"
@@ -215,8 +209,7 @@ class Line(SequentialGeometry[Point]):
         point: Point,
         point_is_on_line: Literal["null", "raise"] = "null",
     ) -> Self | None:
-        """
-        Calculate the shortest line between the line and the given point.
+        """Calculate the shortest line between the line and the given point.
         Start point is point on line, end point is given point.
 
         Parameters
@@ -233,6 +226,7 @@ class Line(SequentialGeometry[Point]):
         -------
         Self | None
             The shortest line between the line and the point.
+
         """
         # Find the projection of the point onto the line
         # If the point is on the line, handle that case
@@ -256,8 +250,7 @@ class Line(SequentialGeometry[Point]):
         return self.__class__([point_projection_on_line, point])
 
     def point_is_on_line(self, point: Point, if_on_endpoint: bool = False) -> bool:
-        """
-        Check if a point is on the line.
+        """Check if a point is on the line.
 
         Parameters
         ----------
@@ -270,6 +263,7 @@ class Line(SequentialGeometry[Point]):
         -------
         bool
             True if the point is on the line, False otherwise.
+
         """
         # If the point is on an endpoint, return according to the specified protocol
         if point in self:
@@ -278,8 +272,7 @@ class Line(SequentialGeometry[Point]):
         return point == self.get_point_projection_on_line(point)
 
     def is_parallel(self, other: "Line", tol: float = CONFIG.tol) -> bool:
-        """
-        Check if two lines are parallel.
+        """Check if two lines are parallel.
 
         Parameters
         ----------
@@ -294,6 +287,7 @@ class Line(SequentialGeometry[Point]):
         -------
         bool
             True if the lines are parallel, False otherwise.
+
         """
         self._check_other_is_line(other)
 
@@ -307,8 +301,7 @@ class Line(SequentialGeometry[Point]):
         return bool(are_parallel)
 
     def is_collinear(self, other: "Line", tol: float = CONFIG.tol) -> bool:
-        """
-        Check if two lines are collinear.
+        """Check if two lines are collinear.
 
         Parameters
         ----------
@@ -323,6 +316,7 @@ class Line(SequentialGeometry[Point]):
         -------
         bool
             True if the lines are collinear, False otherwise.
+
         """
         self._check_other_is_line(other)
 
@@ -352,8 +346,7 @@ class Line(SequentialGeometry[Point]):
         return_mutual_endpoints: bool = True,
         tol: float = CONFIG.tol,
     ) -> "None | Point | Line":
-        """
-        Calculate the intersection between two lines. Return None if the lines do not
+        """Calculate the intersection between two lines. Return None if the lines do not
         intersect, a point if they intersect at a single point, and a line if
         they intersect at a segment.
 
@@ -406,6 +399,7 @@ class Line(SequentialGeometry[Point]):
             Intersection between the lines. None if they don't intersect,
             a Point if they intersect at a point, and a Line if they intersect at a
             segment (ie. infinitely many points).
+
         """
         # Convert points to numpy arrays
         P1, P2, Q1, Q2 = (np.array(p) for p in [*self, *other])

@@ -7,8 +7,7 @@ _CONFIG_FILE_NAME = "femglue.json"
 
 
 class _Configuration(BaseModel):
-    """
-    Singleton containing default configuration parameters.
+    """Singleton containing default configuration parameters.
 
     Example parameter is the floating point precision of mathematical operations.
 
@@ -25,13 +24,13 @@ class _Configuration(BaseModel):
         The inverse of precision.
         Quantities smaller than this one are considered to be approximately zero.
         By default 1e-6
+
     """
 
     precision: int = Field(default=6)
 
     def __new__(cls, *args, **kwargs) -> Self:
-        """
-        Make the class a singleton.
+        """Make the class a singleton.
 
         Use the static configuration file to create the singleton.
 
@@ -39,6 +38,7 @@ class _Configuration(BaseModel):
         -------
         Self
             Singleton configuration.
+
         """
         if not hasattr(cls, "_instance"):
             try:

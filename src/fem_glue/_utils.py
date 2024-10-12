@@ -7,8 +7,7 @@ type _OP_STR = Literal["lt", "le", "eq", "ne", "ge", "gt"]
 
 
 def tol_compare(a: float, b: float, op: _OP_STR, tol: float = CONFIG.tol) -> bool:
-    """
-    Compare floats taking the given tolerance into account.
+    """Compare floats taking the given tolerance into account.
 
     Parameters
     ----------
@@ -25,6 +24,7 @@ def tol_compare(a: float, b: float, op: _OP_STR, tol: float = CONFIG.tol) -> boo
     -------
     bool
         The result of the comparison.
+
     """
     match op:
         case "lt":

@@ -9,8 +9,7 @@ from fem_glue.geometry._bases import SequentialGeometry
 
 
 class Point(SequentialGeometry[float]):
-    """
-    A point in 3D space.
+    """A point in 3D space.
     """
 
     __hash__ = SequentialGeometry.__hash__
@@ -24,32 +23,27 @@ class Point(SequentialGeometry[float]):
         return 3
 
     def distance(self, other: "Point") -> float:
-        """
-        Calculate the distance between two points.
+        """Calculate the distance between two points.
         """
         return round(math.dist(self, other), CONFIG.precision)
 
     def norm(self) -> float:
-        """
-        Calculate the Eucledian norm of the point.
+        """Calculate the Eucledian norm of the point.
         """
         return round(math.hypot(*self), CONFIG.precision)
 
     def normalize(self) -> np.ndarray:
-        """
-        Normalize the point such that the origin and the point define a unit vector.
+        """Normalize the point such that the origin and the point define a unit vector.
         """
         return np.array(self / self.norm())
 
     def as_array(self) -> np.ndarray:
-        """
-        Convert the point to a numpy array.
+        """Convert the point to a numpy array.
         """
         return np.array(self)
 
     def round(self, precision: int = CONFIG.precision) -> Self:
-        """
-        Round the entries of the point to a specific precision.
+        """Round the entries of the point to a specific precision.
 
         Parameters
         ----------
@@ -61,6 +55,7 @@ class Point(SequentialGeometry[float]):
         -------
         Self
             The point with rounded entries.
+
         """
         return self.__class__([round(i, precision) for i in self])
 
@@ -89,6 +84,7 @@ class Point(SequentialGeometry[float]):
         -------
         Self
             The result of the arithmetic operation.
+
         """
         # Apply operation on each coordinate of each point of the goemetry
         if isinstance(other, Sequence):
@@ -111,8 +107,7 @@ class Point(SequentialGeometry[float]):
 
     @override
     def __eq__(self, other: "Point") -> bool:
-        """
-        Check if two geometries of the same type are equal.
+        """Check if two geometries of the same type are equal.
         """
         if not isinstance(other, self.__class__):
             return NotImplemented

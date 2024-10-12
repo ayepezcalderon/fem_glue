@@ -1,5 +1,4 @@
-"""
-Defines the behavior of the Polyline class, which defines straight lines in 3D space
+"""Defines the behavior of the Polyline class, which defines straight lines in 3D space
 """
 
 import functools
@@ -14,8 +13,7 @@ from fem_glue.geometry.utils import lines_from_points
 
 
 class Polyline(SequentialGeometry[Line]):
-    """
-    A polyline defined by n-straight lines connected together in 3D space.
+    """A polyline defined by n-straight lines connected together in 3D space.
 
     The only hard constraint of a polyline is that lines must be connected to each
     other. That is, the end point of line n must have the same coordinates as the
@@ -106,8 +104,7 @@ class Polyline(SequentialGeometry[Line]):
             )
 
     def get_self_intersections(self) -> tuple[list[Point], list[Line]]:
-        """
-        Return the intersections between the lines in the polyline.
+        """Return the intersections between the lines in the polyline.
         The points at which the lines meet (ie. mutual endpoints) DO NOT count as
         intersections.
 
@@ -119,6 +116,7 @@ class Polyline(SequentialGeometry[Line]):
             that the lines have in common.
             The second value is a list containing the segments of that the lines have
             in common.
+
         """
         points = set()
         lines = set()
@@ -138,26 +136,25 @@ class Polyline(SequentialGeometry[Line]):
         return sorted(points), sorted(lines)
 
     def is_closed(self) -> bool:
-        """
-        Determines if the polyline is closed.
+        """Determines if the polyline is closed.
 
         Returns
         -------
         bool
             Whether the polyline is closed.
-        """
 
+        """
         return self._is_closed
 
     @functools.cache
     def is_non_intersecting(self) -> bool:
-        """
-        Determines if the polyline is self-intersecting.
+        """Determines if the polyline is self-intersecting.
 
         Returns
         -------
         bool
             Whether the polyline is self-intersecting.
+
         """
         return not any(self.get_self_intersections())
 
@@ -170,7 +167,6 @@ class Polyline(SequentialGeometry[Line]):
         return len(self._elements)
 
     def perimeter(self) -> float:
-        """
-        Calculate the perimeter of the polyline.
+        """Calculate the perimeter of the polyline.
         """
         return round(sum(ln.length() for ln in self), CONFIG.precision)
