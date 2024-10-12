@@ -73,11 +73,3 @@ known-first-party = ["fem_glue"]
 [tool.ruff.format]
 indent-style = "space"
 quote-style = "double"
-
-[tool.numpydoc_validation]
-checks = [
-  "all",
-]
-exclude = [
-  '\._*',  # Exclude all private functions and dunder methods
-]
