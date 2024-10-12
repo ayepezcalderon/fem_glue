@@ -45,7 +45,9 @@ filterwarnings = [
 [tool.ruff]
 line-length = 88
 target-version = "py312"
-lint.select = [
+
+[tool.ruff.lint]
+select = [
   "E", # pycodestyle error rules
   "W", # pycodestyle warning rules
   "F", # pyflakes rules
@@ -55,7 +57,7 @@ lint.select = [
   "UP", # pyupgrade rules
   "B" # flake8-bugbear rules
 ]
-lint.ignore = [
+ignore = [
   "B019", # Do not raise error on functools.cache/lru_cache
   "N806", # Do not complain on non-lowercase variables, since it can be useful for math. But only use non-lower case for math!
 ]
