@@ -21,8 +21,8 @@ testing = [
   "pytest",
 ]
 dev = [
-  "ruff",
-  "basedpyright",
+  "pre-commit",
+  "pyright",
 ]
 
 [tool.setuptools_scm]
@@ -75,3 +75,13 @@ known-first-party = ["fem_glue"]
 [tool.ruff.format]
 indent-style = "space"
 quote-style = "double"
+
+[tool.pyright]
+pythonVersion = "3.12"
+
+include = ["src", "tests"]
+
+typeCheckingMode = "basic"
+
+venvPath = "."
+venv = ".venv"
