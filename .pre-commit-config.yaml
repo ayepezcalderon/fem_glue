@@ -25,3 +25,4 @@ repos:
     hooks:
     - id: pyright
       language: system
+      stages: [pre-push]
