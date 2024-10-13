@@ -17,7 +17,7 @@ Currently, the _geometry_ package of fem_glue is being developed.
 This package defines shapes in 3D space and operations between them.
 For example, finding the intersection between lines and polygons.
 This functionality is similar to that of the _shapely_ package, but for 3D space.
-Eventually, the _geometry_ sub-package will become its own standalone package and repository, but for this early stage its happy where it is.
+Eventually, once the project is more mature, the _geometry_ sub-package will become its own standalone package and repository.
 
 After the _geometry_ package is done, a package for defining meshes from the geometry will be written.
 This package will collect all the metadata for meshing, and delegate the actual meshing to a well-established meshing software such as _gmsh_.

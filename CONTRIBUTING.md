@@ -3,7 +3,11 @@
 Feel free to make any sort of contribution or suggestion!
 
 Please write unit tests for any functionality you add.
-Make sure to install the 'test' and 'dev' dependencies defined in the pyproject.toml.
-Follow standards defined in the pyproject.toml. For example, follow formatting, linting and other defined standards.
+Follow the standards defined in the pyproject.toml.
+For example, follow formatting, linting and other defined standards.
+To ensure that you follow these standards, install the git hooks using `pre-commit`:
+```
+export PRE_COMMIT_HOME=$PWD/.venv
 
-The package is in progress and in an early stage, so standards are not yet very rigid. Do your thing, and we will align during the PR review :)
+pre-commit install
+```
