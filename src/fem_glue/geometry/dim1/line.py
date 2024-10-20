@@ -136,6 +136,8 @@ class Line(SequentialGeometry[Point]):
 
         """
         # Handle case where the point is not on the ray of the line
+        # Unsigned direction vectors of line and line between point and point in line
+        # must be equal
         test_dir_vector = Line([self[0], point]).dir_unit_vector()
         if not any(
             np.allclose(
