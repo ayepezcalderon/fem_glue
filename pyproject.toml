@@ -19,6 +19,7 @@ dynamic = ["version"]
 [project.optional-dependencies]
 testing = [
   "pytest",
+  "pytest-cov",
 ]
 dev = [
   "pre-commit",
@@ -37,6 +38,7 @@ packages = {find = {where = ["src"], exclude = ["tests"]}}
 package-dir = {'' = "src"}
 
 [tool.pytest.ini_options]
+addopts = "--cov-report term-missing --cov=fem_glue  --verbose"
 testpaths = ["tests"]
 filterwarnings = [
   "error",
