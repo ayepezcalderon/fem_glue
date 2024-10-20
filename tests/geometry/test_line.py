@@ -215,7 +215,27 @@ class TestLine(unittest.TestCase):
                 point_on_line1, point_is_on_line="raise"
             )
 
-    def test_point_is_on_line(self): ...
+    def test_point_is_on_line(self):
+        # Check point within bounds of line
+        point_within_bounds = Point([0.5, 0.5, 0])
+        self.assertTrue(self.line1.point_is_on_line(point_within_bounds))
+
+        # Check point outside bounds of line, but on ray
+        point_outside_bounds = Point([5, 5, 0])
+        self.assertFalse(self.line1.point_is_on_line(point_outside_bounds))
+
+        # Check point not on line nor ray
+        point_not_on_ray = Point([1, 5, 0])
+        self.assertFalse(self.line1.point_is_on_line(point_not_on_ray))
+
+        # Check point on endpoint
+        point_on_endpoint = Point(self.line1[0])
+        self.assertTrue(
+            self.line1.point_is_on_line(point_on_endpoint, if_on_endpoint=True)
+        )
+        self.assertFalse(
+            self.line1.point_is_on_line(point_on_endpoint, if_on_endpoint=False)
+        )
 
 
 class TestLineArithmeticOperations(unittest.TestCase):

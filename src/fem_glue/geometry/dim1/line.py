@@ -284,7 +284,9 @@ class Line(SequentialGeometry[Point]):
         if point in self:
             return if_on_endpoint
 
-        return point == self.get_point_projection_on_line(point)
+        return point == self.get_point_projection_on_line(
+            point, point_is_on_line="self", projection_is_not_on_line="null"
+        )
 
     def is_parallel(self, other: "Line", tol: float = CONFIG.tol) -> bool:
         """Check if two lines are parallel.
