@@ -1,7 +1,7 @@
 import json
 from typing import Self
 
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, ConfigDict, Field
 
 _CONFIG_FILE_NAME = "femglue.json"
 
@@ -27,9 +27,14 @@ class _Configuration(BaseModel):
 
     """
 
+    model_config = ConfigDict(
+        frozen=True,
+        extra="forbid",
+    )
+
     precision: int = Field(default=6)
 
-    def __new__(cls, *args, **kwargs) -> Self:
+    def __new__(cls) -> Self:
         """Make the class a singleton.
 
         Use the static configuration file to create the singleton.
@@ -41,6 +46,13 @@ class _Configuration(BaseModel):
 
         """
         if not hasattr(cls, "_instance"):
+            cls._instance = BaseModel.__new__(cls)
+        return cls._instance
+
+    def __init__(self, *args, **kwargs) -> None:
+        """Make sure that the singleton is only initialized once."""
+        if not hasattr(self.__class__, "_initialized"):
+            # Merge static config if it exists
             try:
                 with open(_CONFIG_FILE_NAME) as f:
                     static_config = json.load(f)
@@ -54,14 +66,10 @@ class _Configuration(BaseModel):
             except FileNotFoundError:
                 ...
 
-            cls._instance = BaseModel.__new__(cls, *args, **kwargs)
-
-        return cls._instance
-
-    def __init__(self, *args, **kwargs) -> None:
-        """Make sure that the singleton is only initialized once."""
-        if not hasattr(self.__class__, "_initialized"):
+            # Initialize base model
             super().__init__(*args, **kwargs)
+
+            # Mark as initialized
             _Configuration._initialized = True
 
     @property
