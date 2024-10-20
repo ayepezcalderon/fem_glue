@@ -136,9 +136,14 @@ class Line(SequentialGeometry[Point]):
 
         """
         # Handle case where the point is not on the ray of the line
-        new_line = Line([self[0], point])
-        if not np.allclose(
-            self.dir_unit_vector(), new_line.dir_unit_vector(), atol=CONFIG.tol
+        test_dir_vector = Line([self[0], point]).dir_unit_vector()
+        if not any(
+            np.allclose(
+                self.dir_unit_vector(),
+                sign * test_dir_vector,
+                atol=CONFIG.tol,
+            )
+            for sign in [1, -1]
         ):
             if point_is_not_on_ray == "raise":
                 raise PointNotOnShapeError("The point is not on the ray of the line.")
