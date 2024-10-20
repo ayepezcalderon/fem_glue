@@ -175,6 +175,48 @@ class TestLine(unittest.TestCase):
                     point, projection_is_not_on_line="raise"
                 )
 
+    def test_get_shortest_line_to_point(self):
+        # Standard case -> point is not on line but projection is on line
+        projection_on_line_point = Point([1, 0, 0])
+        shortest_line = self.line1.get_shortest_line_to_point(projection_on_line_point)
+        assert isinstance(shortest_line, Line)
+        self.assertEqual(shortest_line[0], Point([0.5, 0.5, 0]))
+        self.assertEqual(shortest_line[1], projection_on_line_point)
+
+        # Point not on line and projection after end point
+        projection_after_line_point = Point([10, 0, 0])
+        shortest_line = self.line1.get_shortest_line_to_point(
+            projection_after_line_point
+        )
+        assert isinstance(shortest_line, Line)
+        self.assertEqual(shortest_line[0], self.line1[1])
+        self.assertEqual(shortest_line[1], projection_after_line_point)
+
+        # Point not on line and projection before end point
+        projection_before_line_point = Point([-10, 0, 0])
+        shortest_line = self.line1.get_shortest_line_to_point(
+            projection_before_line_point
+        )
+        assert isinstance(shortest_line, Line)
+        self.assertEqual(shortest_line[0], self.line1[0])
+        self.assertEqual(shortest_line[1], projection_before_line_point)
+
+        # Point on line null behavior
+        point_on_line1 = Point([0.5, 0.5, 0])
+        self.assertIsNone(
+            self.line1.get_shortest_line_to_point(
+                point_on_line1, point_is_on_line="null"
+            )
+        )
+
+        # Point on line raise behavior
+        with self.assertRaises(PointOnShapeError):
+            self.line1.get_shortest_line_to_point(
+                point_on_line1, point_is_on_line="raise"
+            )
+
+    def test_point_is_on_line(self): ...
+
 
 class TestLineArithmeticOperations(unittest.TestCase):
     def setUp(self):
