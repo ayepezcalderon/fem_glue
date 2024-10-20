@@ -32,13 +32,13 @@ It will define finite element shapes and boundary conditions that can then be de
 To install the package as a user run the following command at the top-level of the repository:
 
 ```shell
-pip install .
+python -m pip install .
 ```
 
 To install it as a developer run the following command instead:
 
 ```shell
-pip install -e .[testing,dev]
+python -m pip install -e .[testing,dev]
 ```
 
 
