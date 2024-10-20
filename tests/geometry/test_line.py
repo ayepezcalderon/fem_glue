@@ -183,7 +183,7 @@ class TestLine(unittest.TestCase):
         self.assertEqual(shortest_line[0], Point([0.5, 0.5, 0]))
         self.assertEqual(shortest_line[1], projection_on_line_point)
 
-        # Point not on line and projection after end point
+        # Point not on ray and projection after end point
         projection_after_line_point = Point([10, 0, 0])
         shortest_line = self.line1.get_shortest_line_to_point(
             projection_after_line_point
@@ -192,7 +192,16 @@ class TestLine(unittest.TestCase):
         self.assertEqual(shortest_line[0], self.line1[1])
         self.assertEqual(shortest_line[1], projection_after_line_point)
 
-        # Point not on line and projection before end point
+        # Point on ray but after endpoint
+        point_on_ray_and_after_line = Point([10, 10, 0])
+        shortest_line = self.line1.get_shortest_line_to_point(
+            point_on_ray_and_after_line
+        )
+        assert isinstance(shortest_line, Line)
+        self.assertEqual(shortest_line[0], self.line1[1])
+        self.assertEqual(shortest_line[1], point_on_ray_and_after_line)
+
+        # Point not on ray and projection before end point
         projection_before_line_point = Point([-10, 0, 0])
         shortest_line = self.line1.get_shortest_line_to_point(
             projection_before_line_point
@@ -200,6 +209,15 @@ class TestLine(unittest.TestCase):
         assert isinstance(shortest_line, Line)
         self.assertEqual(shortest_line[0], self.line1[0])
         self.assertEqual(shortest_line[1], projection_before_line_point)
+
+        # Point on ray but projection before end point
+        point_on_ray_and_before_line = Point([-10, -10, 0])
+        shortest_line = self.line1.get_shortest_line_to_point(
+            point_on_ray_and_before_line
+        )
+        assert isinstance(shortest_line, Line)
+        self.assertEqual(shortest_line[0], self.line1[0])
+        self.assertEqual(shortest_line[1], point_on_ray_and_before_line)
 
         # Point on line null behavior
         point_on_line1 = Point([0.5, 0.5, 0])
