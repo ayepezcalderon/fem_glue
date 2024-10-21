@@ -1,5 +1,5 @@
 import math
-from typing import Literal
+from typing import Any, Literal, Never
 
 from fem_glue._config import CONFIG
 
@@ -41,3 +41,7 @@ def tol_compare(a: float, b: float, op: _OP_STR, tol: float = CONFIG.tol) -> boo
             return a > b + tol
         case _:
             raise ValueError(f"Invalid comparison operator: {op}")
+
+
+def bad_literal_error(name: str, value: Any) -> Never:
+    raise ValueError(f"Invalid value for '{name}': {value}")

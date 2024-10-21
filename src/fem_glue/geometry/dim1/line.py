@@ -11,7 +11,7 @@ from typing import Literal, Self, override
 import numpy as np
 
 from fem_glue._config import CONFIG
-from fem_glue._utils import tol_compare
+from fem_glue._utils import bad_literal_error, tol_compare
 from fem_glue.geometry import Point
 from fem_glue.geometry._bases import SequentialGeometry
 from fem_glue.geometry._exceptions import PointNotOnShapeError, PointOnShapeError
@@ -96,8 +96,10 @@ class Line(SequentialGeometry[Point]):
         if np.allclose(point.as_array(), projected_point.as_array(), atol=CONFIG.tol):
             if point_is_on_ray == "raise":
                 raise PointOnShapeError("The point is on the ray of the line.")
-            if point_is_on_ray == "self":
+            elif point_is_on_ray == "self":
                 return point
+            else:
+                bad_literal_error("point_is_on_ray", point_is_on_ray)
 
         # Rounding to 1 less decimal than the config seems to behave better
         return projected_point.round(CONFIG.precision - 1)

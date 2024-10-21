@@ -135,6 +135,13 @@ class TestLine(unittest.TestCase):
         with self.assertRaises(PointOnShapeError):
             self.line1.get_point_projection_on_ray(point, point_is_on_ray="raise")
 
+        # Bad literal for point_is_not_on_ray
+        with self.assertRaises(ValueError):
+            self.line1.get_point_projection_on_ray(
+                point,
+                point_is_on_ray="bad_literal",  # pyright: ignore[reportArgumentType]
+            )
+
     def test_get_point_position_on_ray(self):
         ref_line = self.line1 * 2
 
