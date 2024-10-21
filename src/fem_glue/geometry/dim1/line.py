@@ -488,7 +488,7 @@ class Line(SequentialGeometry[Point]):
         if not np.allclose(intersection_point_L1, intersection_point_L2, atol=tol):
             raise ValueError(
                 "There was a numerical error when determining if the lines intersect."
-            )
+            )  # pragma: no cover
 
         return Point(intersection_point_L1)
 
