@@ -1,4 +1,5 @@
 import math
+import re
 import unittest
 
 import numpy as np
@@ -17,6 +18,13 @@ class TestLine(unittest.TestCase):
         self.line5 = Line([Point([0, 1, 0]), Point([1, 2, 0])])
         self.line6 = Line([Point([0.5, 0.5, 0]), Point([1.5, 1.5, 0])])
         self.line7 = Line([Point([10, 1, 0]), Point([10, 0, 0])])
+
+    def test_init_equal_points_error(self):
+        with self.assertRaisesRegex(
+            ValueError,
+            re.escape("A line cannot be constructed from two identical points."),
+        ):
+            Line([Point([1, 0, 0]), Point([1, 0, 0])])
 
     def test_in_keyword(self):
         for p in self.line6:
