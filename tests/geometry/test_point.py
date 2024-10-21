@@ -1,4 +1,7 @@
+import math
 import unittest
+
+import numpy as np
 
 from fem_glue._config import CONFIG
 from fem_glue.geometry import Point
@@ -7,6 +10,33 @@ from fem_glue.geometry import Point
 class TestPoint(unittest.TestCase):
     def setUp(self):
         self.point = Point([3, 4, 5])
+
+    def test_normalize(self):
+        normalized = self.point.normalize()
+
+        # Check norm
+        self.assertAlmostEqual(math.hypot(*normalized), 1, places=CONFIG.precision)
+
+        # Check inverse operation
+        self.assertEqual(
+            (Point(list(normalized)) * self.point.norm()).round(5),
+            self.point,
+        )
+
+    def test_round(self):
+        unrounded = Point([3.14159, 4.14159, 5.14159])
+        rounded = unrounded.round(3)
+
+        self.assertEqual(rounded, Point([3.142, 4.142, 5.142]))
+        self.assertNotEqual(rounded, Point([3.1426, 4.1426, 5.1426]))
+        self.assertNotEqual(rounded, unrounded)
+
+    def test_as_array(self):
+        array_from_point = self.point.as_array()
+
+        self.assertIsInstance(array_from_point, np.ndarray)
+        self.assertEqual(array_from_point.shape, (3,))
+        self.assertTrue(np.equal(array_from_point, [3, 4, 5]).all())
 
     def test_norm(self):
         result = self.point.norm()
