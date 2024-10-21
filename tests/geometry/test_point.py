@@ -104,3 +104,19 @@ class TestPoint(unittest.TestCase):
     def test_pow(self):
         exp = 2
         self.assertEqual(self.point**exp, Point([9, 16, 25]))
+
+    def test_eq(self):
+        # Equal points
+        self.assertTrue(self.point == Point([3, 4, 5]))
+        # Equal contents but list is not point, therefore not equal
+        self.assertFalse(self.point == [3, 4, 5])
+        # Non-equal points
+        self.assertFalse(self.point == Point([3, 4, 6]))
+
+    def test_ne(self):
+        # Equal points
+        self.assertFalse(self.point != Point([3, 4, 5]))
+        # Non-equal points
+        self.assertTrue(self.point != Point([3, 4, 6]))
+        # Equal contents but list is not point, therefore not equal
+        self.assertTrue(self.point != [3, 4, 5])
