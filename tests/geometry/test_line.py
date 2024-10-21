@@ -188,6 +188,12 @@ class TestLine(unittest.TestCase):
         # "raise" behavior
         with self.assertRaises(PointOnShapeError):
             _ = self.line1.get_point_projection_on_line(point, point_is_on_line="raise")
+        # Bad literal for point_is_on_line
+        with self.assertRaises(ValueError):
+            self.line1.get_point_projection_on_line(
+                point,
+                point_is_on_line="bad_literal",  # pyright: ignore[reportArgumentType]
+            )
 
         # Projection outside line, one point outside ray and another on ray
         points = [
@@ -205,6 +211,12 @@ class TestLine(unittest.TestCase):
                 _ = self.line1.get_point_projection_on_line(
                     point, projection_is_not_on_line="raise"
                 )
+        # Bad literal for projection_is_not_on_line
+        with self.assertRaises(ValueError):
+            self.line1.get_point_projection_on_line(
+                point,
+                projection_is_not_on_line="bad_literal",  # pyright: ignore[reportArgumentType]
+            )
 
     def test_get_shortest_line_to_point(self):
         # Standard case -> point is not on line but projection is on line

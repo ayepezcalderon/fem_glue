@@ -210,15 +210,21 @@ class Line(SequentialGeometry[Point]):
                 raise PointNotOnShapeError(
                     "The projection of the point is not on the line."
                 )
-            if projection_is_not_on_line == "null":
+            elif projection_is_not_on_line == "null":
                 return None
+            else:
+                bad_literal_error(
+                    "projection_is_not_on_line", projection_is_not_on_line
+                )
 
         # If projection is on line and is equal to the point, point is on line
         if point_projection_on_ray == point:
             if point_is_on_line == "raise":
                 raise PointOnShapeError("The point is on the line.")
-            if point_is_on_line == "self":
+            elif point_is_on_line == "self":
                 return point
+            else:
+                bad_literal_error("point_is_on_line", point_is_on_line)
 
         return point_projection_on_ray
 
