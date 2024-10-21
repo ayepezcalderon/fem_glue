@@ -18,6 +18,7 @@ class TestLine(unittest.TestCase):
         self.line5 = Line([Point([0, 1, 0]), Point([1, 2, 0])])
         self.line6 = Line([Point([0.5, 0.5, 0]), Point([1.5, 1.5, 0])])
         self.line7 = Line([Point([10, 1, 0]), Point([10, 0, 0])])
+        self.line8 = Line([Point([1, 1, 0]), Point([2, 2, 0])])
 
     def test_init_equal_points_error(self):
         with self.assertRaisesRegex(
@@ -87,10 +88,20 @@ class TestLine(unittest.TestCase):
 
     def test_intersect(self):
         # Test intersection of two lines that intersect at a point
-        # Non-colinear
+        # Non-colinear and non-common point
         self.assertEqual(self.line1.intersect(self.line2), Point([0.5, 0.5, 0]))
-        # Colinear
-        self.assertEqual(self.line1.intersect(self.line4), Point([0, 0, 0]))
+        # Non-colinear and point in common
+        self.assertIsNone(
+            self.line1.intersect(self.line4, return_mutual_endpoints=False)
+        )
+        # Colinear (always has to be point in common)
+        self.assertEqual(
+            self.line1.intersect(self.line8, return_mutual_endpoints=True),
+            Point([1, 1, 0]),
+        )
+        self.assertIsNone(
+            self.line1.intersect(self.line8, return_mutual_endpoints=False)
+        )
 
         # Test intersection of two lines that do not intersect
         # Parallel but not colinear
