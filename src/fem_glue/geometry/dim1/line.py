@@ -151,8 +151,10 @@ class Line(SequentialGeometry[Point]):
         ):
             if point_is_not_on_ray == "raise":
                 raise PointNotOnShapeError("The point is not on the ray of the line.")
-            if point_is_not_on_ray == "null":
+            elif point_is_not_on_ray == "null":
                 return None
+            else:
+                bad_literal_error("point_is_on_ray", point_is_not_on_ray)
 
         position = np.dot(np.array(point - self[0]), self.dir_unit_vector())
 
