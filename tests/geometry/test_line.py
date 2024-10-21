@@ -34,7 +34,16 @@ class TestLine(unittest.TestCase):
             self.assertIn(almost_p, self.line6)
 
     def test_length(self):
-        self.assertEqual(self.line1.length(), round(2**0.5, CONFIG.precision))
+        self.assertAlmostEqual(self.line1.length(), 2**0.5, places=CONFIG.precision)
+
+    def test_normalize(self):
+        normalized = self.line1.normalize()
+
+        # Test length
+        self.assertAlmostEqual(normalized.length(), 1, places=CONFIG.precision)
+
+        # Test inverse operation
+        self.assertEqual(normalized * self.line1.length(), self.line1)
 
     def test_as_vector(self):
         expected = np.array([1, 1, 0])
