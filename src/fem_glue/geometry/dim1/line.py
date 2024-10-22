@@ -6,15 +6,18 @@ The Line defines straight lines in 3D space.
 import functools
 import math
 from collections.abc import Sequence
-from typing import Literal, Self, override
+from typing import Literal, Self, assert_never, override
 
 import numpy as np
 
 from fem_glue._config import CONFIG
-from fem_glue._utils import bad_literal_error, tol_compare
+from fem_glue._utils import check_literal, tol_compare
 from fem_glue.geometry import Point
 from fem_glue.geometry._bases import SequentialGeometry
 from fem_glue.geometry._exceptions import PointNotOnShapeError, PointOnShapeError
+
+type SelfRaise = Literal["self", "raise"]
+type NullRaise = Literal["null", "raise"]
 
 
 class Line(SequentialGeometry[Point]):
@@ -60,7 +63,7 @@ class Line(SequentialGeometry[Point]):
     def get_point_projection_on_ray(
         self,
         point: Point,
-        point_is_on_ray: Literal["self", "raise"] = "self",
+        point_is_on_ray: SelfRaise = "self",
     ) -> Point:
         """Calculate the projection of the given point onto the ray of the line.
 
@@ -68,7 +71,7 @@ class Line(SequentialGeometry[Point]):
         ----------
         point : Point
             The point to project onto the ray of the line.
-        point_is_on_ray : Literal["self", "raise"]
+        point_is_on_ray : SelfRaise
             Specifies the behavior when the given point is on the ray of the line.
             If "self", the given point is returned.
             If "raise", an error is raised.
@@ -80,6 +83,8 @@ class Line(SequentialGeometry[Point]):
             The projection of the given point onto the ray of the line.
 
         """
+        check_literal("point_is_on_ray", point_is_on_ray, SelfRaise)
+
         # Vector between the start point of the line and the given point
         line_to_point_vector = point - self[0]
 
@@ -99,7 +104,7 @@ class Line(SequentialGeometry[Point]):
             elif point_is_on_ray == "self":
                 return point
             else:
-                bad_literal_error("point_is_on_ray", point_is_on_ray)
+                assert_never(point_is_on_ray)  # pragma: no cover
 
         # Rounding to 1 less decimal than the config seems to behave better
         return projected_point.round(CONFIG.precision - 1)
@@ -108,7 +113,7 @@ class Line(SequentialGeometry[Point]):
         self,
         point: Point,
         normalized: bool = True,
-        point_is_not_on_ray: Literal["null", "raise"] = "null",
+        point_is_not_on_ray: NullRaise = "null",
     ) -> float | None:
         """Calculate the position of the point on the line's ray coordinate system.
 
@@ -125,7 +130,7 @@ class Line(SequentialGeometry[Point]):
             Specifies wether the coordinate system is normalized such that its unit
             length is equal to the length of the line.
             Default is True.
-        point_is_not_on_ray : Literal["null", "raise"]
+        point_is_not_on_ray : NullRaise
             Defines the behavior when the given point is not on the ray of the line.
             If "null", None is returned.
             If "raise", an error is raised.
@@ -137,6 +142,8 @@ class Line(SequentialGeometry[Point]):
             The position of the point on the coordinate system.
 
         """
+        check_literal("point_is_on_ray", point_is_not_on_ray, NullRaise)
+
         # Handle case where the point is not on the ray of the line
         # Unsigned direction vectors of line and line between point and point in line
         # must be equal
@@ -154,7 +161,7 @@ class Line(SequentialGeometry[Point]):
             elif point_is_not_on_ray == "null":
                 return None
             else:
-                bad_literal_error("point_is_on_ray", point_is_not_on_ray)
+                assert_never(point_is_not_on_ray)  # pragma: no cover
 
         position = np.dot(np.array(point - self[0]), self.dir_unit_vector())
 
@@ -166,8 +173,8 @@ class Line(SequentialGeometry[Point]):
     def get_point_projection_on_line(
         self,
         point: Point,
-        point_is_on_line: Literal["self", "raise"] = "self",
-        projection_is_not_on_line: Literal["null", "raise"] = "null",
+        point_is_on_line: SelfRaise = "self",
+        projection_is_not_on_line: NullRaise = "null",
     ) -> Point | None:
         """Calculate the projection of the given point onto the line.
 
@@ -175,12 +182,12 @@ class Line(SequentialGeometry[Point]):
         ----------
         point : Point
             The point to project onto the line.
-        point_is_on_line : Literal["self", "raise"]
+        point_is_on_line : SelfRaise
             Specifies the behavior when the given point is on the line.
             If "self", the given point is returned.
             If "raise", an error is raised.
             Default is "self".
-        projection_is_not_on_line : Literal["null", "raise"]
+        projection_is_not_on_line : NullRaise
             Specifies the behavior when the projection of the point is not on the line.
             If "null", None is returned.
             If "raise", an error is raised.
@@ -192,6 +199,9 @@ class Line(SequentialGeometry[Point]):
             The projection of the given point onto the line.
 
         """
+        check_literal("point_is_on_line", point_is_on_line, SelfRaise)
+        check_literal("projection_is_not_on_line", projection_is_not_on_line, NullRaise)
+
         point_projection_on_ray = self.get_point_projection_on_ray(
             point, point_is_on_ray="self"
         )
@@ -213,9 +223,7 @@ class Line(SequentialGeometry[Point]):
             elif projection_is_not_on_line == "null":
                 return None
             else:
-                bad_literal_error(
-                    "projection_is_not_on_line", projection_is_not_on_line
-                )
+                assert_never(projection_is_not_on_line)  # pragma: no cover
 
         # If projection is on line and is equal to the point, point is on line
         if point_projection_on_ray == point:
@@ -224,14 +232,14 @@ class Line(SequentialGeometry[Point]):
             elif point_is_on_line == "self":
                 return point
             else:
-                bad_literal_error("point_is_on_line", point_is_on_line)
+                assert_never(point_is_on_line)  # pragma: no cover
 
         return point_projection_on_ray
 
     def get_shortest_line_to_point(
         self,
         point: Point,
-        point_is_on_line: Literal["null", "raise"] = "null",
+        point_is_on_line: NullRaise = "null",
     ) -> Self | None:
         """Calculate the shortest line between the line and the given point.
 
@@ -241,7 +249,7 @@ class Line(SequentialGeometry[Point]):
         ----------
         point : Point
             The point to which the shortest line is calculated.
-        point_is_on_line : Literal["null", "raise"]
+        point_is_on_line : NullRaise
             Specifies the behavior when the given point is on the line.
             If "null", None is returned.
             If "raise", an error is raised.

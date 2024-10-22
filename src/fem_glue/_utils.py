@@ -1,5 +1,5 @@
 import math
-from typing import Any, Literal, Never
+from typing import Any, Literal, TypeAliasType, get_args
 
 from fem_glue._config import CONFIG
 
@@ -43,5 +43,8 @@ def tol_compare(a: float, b: float, op: _OP_STR, tol: float = CONFIG.tol) -> boo
             raise ValueError(f"Invalid comparison operator: {op}")
 
 
-def bad_literal_error(name: str, value: Any) -> Never:
-    raise ValueError(f"Invalid value for '{name}': {value}")
+def check_literal(name: str, value: Any, literal_type_alias: TypeAliasType) -> None:
+    literal_args = get_args(literal_type_alias.__value__)
+    if value not in literal_args:
+        possibles_clause = ", ".join(literal_args[:-1]) + " or " + literal_args[-1]
+        raise ValueError(f"The parameter {name} must be one of {possibles_clause}.")
